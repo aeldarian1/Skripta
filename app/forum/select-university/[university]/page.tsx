@@ -33,7 +33,7 @@ export default async function SelectFacultyPage({ params }: PageProps) {
     .from('universities')
     .select('*')
     .eq('slug', universitySlug)
-    .single();
+    .single() as { data: University | null };
 
   if (!university) {
     notFound();
@@ -44,7 +44,7 @@ export default async function SelectFacultyPage({ params }: PageProps) {
     .from('faculties')
     .select('*')
     .eq('university_id', university.id)
-    .order('order_index', { ascending: true });
+    .order('order_index', { ascending: true }) as { data: Faculty[] | null };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
@@ -76,7 +76,7 @@ export default async function SelectFacultyPage({ params }: PageProps) {
 
         {/* Faculty Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {(faculties as Faculty[] || []).map((faculty) => (
+          {(faculties || []).map((faculty) => (
             <Link
               key={faculty.id}
               href={`/forum/${universitySlug}/${faculty.slug}`}

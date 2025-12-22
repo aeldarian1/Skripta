@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import { CreateTopicPage } from '@/app/forum/new/create-topic-page';
-import type { University, Faculty } from '@/types/database';
+import type { University, Faculty, Category } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +37,7 @@ export default async function NewTopicServerPage({ params, searchParams }: PageP
     .from('universities')
     .select('*')
     .eq('slug', universitySlug)
-    .single();
+    .single() as { data: University | null };
 
   if (!university) {
     notFound();
@@ -49,7 +49,7 @@ export default async function NewTopicServerPage({ params, searchParams }: PageP
     .select('*')
     .eq('university_id', university.id)
     .eq('slug', facultySlug)
-    .single();
+    .single() as { data: Faculty | null };
 
   if (!faculty) {
     notFound();
@@ -60,7 +60,7 @@ export default async function NewTopicServerPage({ params, searchParams }: PageP
     .from('categories')
     .select('*')
     .eq('faculty_id', faculty.id)
-    .order('order_index', { ascending: true });
+    .order('order_index', { ascending: true }) as { data: Category[] | null };
 
   // Load tags
   const { data: tags } = await supabase.from('tags').select('*').order('name');

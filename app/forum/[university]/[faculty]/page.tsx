@@ -62,7 +62,7 @@ export default async function FacultyForumPage({ params, searchParams }: PagePro
     .from('universities')
     .select('*')
     .eq('slug', universitySlug)
-    .single();
+    .single() as { data: University | null };
 
   if (!university) {
     notFound();
@@ -74,7 +74,7 @@ export default async function FacultyForumPage({ params, searchParams }: PagePro
     .select('*')
     .eq('university_id', university.id)
     .eq('slug', facultySlug)
-    .single();
+    .single() as { data: Faculty | null };
 
   if (!faculty) {
     notFound();

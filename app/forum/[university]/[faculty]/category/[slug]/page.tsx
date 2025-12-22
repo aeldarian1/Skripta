@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/ui/pagination';
 import { MessageSquare, Pin, CheckCircle, ChevronLeft } from 'lucide-react';
-import type { University, Faculty } from '@/types/database';
+import type { University, Faculty, Category } from '@/types/database';
 
 // Revalidate every 60 seconds (1 minute) for better cache performance
 export const revalidate = 60;
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps) {
     .from('categories')
     .select('name, description')
     .eq('slug', slug)
-    .single();
+    .single() as { data: Pick<Category, 'name' | 'description'> | null };
 
   if (!category) {
     return {
@@ -38,9 +38,12 @@ export async function generateMetadata({ params }: PageProps) {
     };
   }
 
+  const categoryName = category.name;
+  const categoryDescription = category.description;
+
   return {
-    title: `${category.name} | Skripta Forum`,
-    description: category.description || `Pregledajte teme u kategoriji ${category.name}`,
+    title: `${categoryName} | Skripta Forum`,
+    description: categoryDescription || `Pregledajte teme u kategoriji ${categoryName}`,
   };
 }
 
@@ -56,7 +59,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     .from('universities')
     .select('*')
     .eq('slug', universitySlug)
-    .single();
+    .single() as { data: University | null };
 
   if (!university) {
     notFound();
@@ -68,7 +71,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     .select('*')
     .eq('university_id', university.id)
     .eq('slug', facultySlug)
-    .single();
+    .single() as { data: Faculty | null };
 
   if (!faculty) {
     notFound();
@@ -80,7 +83,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     .select('id, name, slug, description, icon, color, faculty_id')
     .eq('slug', slug)
     .eq('faculty_id', faculty.id)
-    .single();
+    .single() as { data: Pick<Category, 'id' | 'name' | 'slug' | 'description' | 'icon' | 'color' | 'faculty_id'> | null };
 
   if (!category) {
     notFound();
