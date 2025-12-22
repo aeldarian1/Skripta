@@ -40,6 +40,7 @@ export interface Database {
           email_verified_at: string | null
           university_id: string | null
           faculty_id: string | null
+          study_program_id: string | null
         }
         Insert: {
           id: string
@@ -69,6 +70,7 @@ export interface Database {
           email_verified_at?: string | null
           university_id?: string | null
           faculty_id?: string | null
+          study_program_id?: string | null
         }
         Update: {
           id?: string
@@ -98,6 +100,7 @@ export interface Database {
           email_verified_at?: string | null
           university_id?: string | null
           faculty_id?: string | null
+          study_program_id?: string | null
         }
       }
       universities: {
@@ -162,6 +165,50 @@ export interface Database {
           abbreviation?: string | null
           description?: string | null
           university_id?: string
+          order_index?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      study_programs: {
+        Row: {
+          id: string
+          name: string
+          name_en: string | null
+          abbreviation: string | null
+          faculty_id: string
+          degree_level: string
+          duration_years: number
+          ects_credits: number | null
+          description: string | null
+          order_index: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          name_en?: string | null
+          abbreviation?: string | null
+          faculty_id: string
+          degree_level?: string
+          duration_years?: number
+          ects_credits?: number | null
+          description?: string | null
+          order_index?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          name_en?: string | null
+          abbreviation?: string | null
+          faculty_id?: string
+          degree_level?: string
+          duration_years?: number
+          ects_credits?: number | null
+          description?: string | null
           order_index?: number
           created_at?: string
           updated_at?: string
@@ -399,6 +446,7 @@ export interface Database {
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 export type University = Database['public']['Tables']['universities']['Row'];
 export type Faculty = Database['public']['Tables']['faculties']['Row'];
+export type StudyProgram = Database['public']['Tables']['study_programs']['Row'];
 export type Category = Database['public']['Tables']['categories']['Row'];
 export type Topic = Database['public']['Tables']['topics']['Row'];
 export type Reply = Database['public']['Tables']['replies']['Row'];

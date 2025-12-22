@@ -29,6 +29,7 @@ type Profile = {
   profile_color: string;
   university_id: string | null;
   faculty_id: string | null;
+  study_program_id: string | null;
 };
 
 type University = {
@@ -54,14 +55,31 @@ type Faculty = {
   updated_at: string;
 };
 
+type StudyProgram = {
+  id: string;
+  name: string;
+  name_en: string | null;
+  abbreviation: string | null;
+  faculty_id: string;
+  degree_level: string;
+  duration_years: number;
+  ects_credits: number | null;
+  description: string | null;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export function ProfileEditForm({
   profile,
   universities,
   faculties,
+  studyPrograms,
 }: {
   profile: Profile;
   universities: University[];
   faculties: Faculty[];
+  studyPrograms: StudyProgram[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -79,10 +97,18 @@ export function ProfileEditForm({
   const [selectedFacultyId, setSelectedFacultyId] = useState<string>(
     profile.faculty_id || ''
   );
+  const [selectedStudyProgramId, setSelectedStudyProgramId] = useState<string>(
+    profile.study_program_id || ''
+  );
 
   // Filter faculties based on selected university
   const filteredFaculties = selectedUniversityId
     ? faculties.filter((f) => f.university_id === selectedUniversityId)
+    : [];
+
+  // Filter study programs based on selected faculty
+  const filteredStudyPrograms = selectedFacultyId
+    ? studyPrograms.filter((sp) => sp.faculty_id === selectedFacultyId)
     : [];
 
   async function handleSubmit(formData: FormData) {
@@ -132,9 +158,10 @@ export function ProfileEditForm({
         formData.set('profile_banner_url', bannerUrl);
       }
 
-      // Add university_id and faculty_id to form data
+      // Add university_id, faculty_id, and study_program_id to form data
       formData.set('university_id', selectedUniversityId || '');
       formData.set('faculty_id', selectedFacultyId || '');
+      formData.set('study_program_id', selectedStudyProgramId || '');
 
       // Update profile with new data
       const result = await updateProfile(formData);
@@ -306,8 +333,9 @@ export function ProfileEditForm({
                 value={selectedUniversityId}
                 onChange={(e) => {
                   setSelectedUniversityId(e.target.value);
-                  // Reset faculty when university changes
+                  // Reset faculty and study program when university changes
                   setSelectedFacultyId('');
+                  setSelectedStudyProgramId('');
                 }}
                 className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               >
@@ -331,7 +359,11 @@ export function ProfileEditForm({
                 id="faculty_id"
                 name="faculty_id"
                 value={selectedFacultyId}
-                onChange={(e) => setSelectedFacultyId(e.target.value)}
+                onChange={(e) => {
+                  setSelectedFacultyId(e.target.value);
+                  // Reset study program when faculty changes
+                  setSelectedStudyProgramId('');
+                }}
                 disabled={!selectedUniversityId}
                 className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -347,19 +379,26 @@ export function ProfileEditForm({
 
           <div>
             <label
-              htmlFor="study_program"
+              htmlFor="study_program_id"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
               Studijski Program
             </label>
-            <input
-              type="text"
-              id="study_program"
-              name="study_program"
-              defaultValue={profile.study_program || ''}
-              placeholder="npr. Računarstvo"
-              className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
+            <select
+              id="study_program_id"
+              name="study_program_id"
+              value={selectedStudyProgramId}
+              onChange={(e) => setSelectedStudyProgramId(e.target.value)}
+              disabled={!selectedFacultyId}
+              className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">Odaberi studijski program</option>
+              {filteredStudyPrograms.map((program) => (
+                <option key={program.id} value={program.id}>
+                  {program.name} {program.abbreviation && `(${program.abbreviation})`}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

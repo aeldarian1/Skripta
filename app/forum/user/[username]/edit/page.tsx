@@ -36,7 +36,7 @@ export default async function EditProfilePage({
     redirect(`/forum/user/${username}`);
   }
 
-  // Fetch universities and faculties for dropdowns
+  // Fetch universities, faculties, and study programs for dropdowns
   const { data: universities } = await supabase
     .from('universities')
     .select('*')
@@ -44,6 +44,11 @@ export default async function EditProfilePage({
 
   const { data: faculties } = await supabase
     .from('faculties')
+    .select('*')
+    .order('order_index', { ascending: true });
+
+  const { data: studyPrograms } = await supabase
+    .from('study_programs')
     .select('*')
     .order('order_index', { ascending: true });
 
@@ -58,6 +63,7 @@ export default async function EditProfilePage({
             profile={profile}
             universities={universities || []}
             faculties={faculties || []}
+            studyPrograms={studyPrograms || []}
           />
         </CardContent>
       </Card>
