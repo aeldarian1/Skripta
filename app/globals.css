@@ -44,30 +44,30 @@
   .dark {
     --background: 222.2 47% 11%;
     --foreground: 210 40% 98%;
-    --card: 217 25% 20%;
+    --card: 217 33% 17%;
     --card-foreground: 210 40% 98%;
-    --popover: 217 25% 20%;
+    --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
-    --primary: 355 87% 65%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 25% 22%;
+    --primary: 355 87% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 25% 20%;
-    --muted-foreground: 215 20% 70%;
-    --accent: 217 25% 22%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 217 25% 28%;
-    --input: 217 25% 22%;
-    --ring: 355 87% 65%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 355 87% 60%;
 
-    /* Student-friendly vibrant colors for dark mode - improved contrast */
-    --primary-blue: 217 91% 68%;
-    --success: 142 76% 48%;
-    --warning: 33 100% 58%;
-    --info: 199 89% 56%;
-    --purple: 271 81% 64%;
+    /* Student-friendly vibrant colors for dark mode */
+    --primary-blue: 217 91% 65%;
+    --success: 142 76% 45%;
+    --warning: 33 100% 55%;
+    --info: 199 89% 53%;
+    --purple: 271 81% 61%;
   }
 }
 
@@ -77,43 +77,18 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--gradient-from))] to-[hsl(var(--gradient-to))];
   }
 
-  /* Glassmorphism effect - improved contrast for dark mode */
+  /* Glassmorphism effect */
   .glass {
-    @apply backdrop-blur-md bg-white/80 dark:bg-gray-800/85 border border-white/20 dark:border-gray-600/40;
+    @apply backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-gray-700/30;
   }
 
   .glass-card {
-    @apply backdrop-blur-xl bg-white/90 dark:bg-gray-800/95 border border-white/30 dark:border-gray-600/50 shadow-2xl;
+    @apply backdrop-blur-xl bg-white/90 dark:bg-gray-800/90 border border-white/30 dark:border-gray-700/40 shadow-2xl;
   }
 
-  /* Hover lift effect - enhanced for desktop */
+  /* Hover lift effect */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10;
-  }
-
-  @media (min-width: 1024px) {
-    .hover-lift {
-      @apply hover:-translate-y-2 hover:shadow-2xl;
-    }
-  }
-
-  /* Desktop-specific hover enhancements */
-  @media (min-width: 1024px) {
-    .hover-scale-desktop {
-      @apply transition-transform duration-200 hover:scale-[1.02];
-    }
-
-    .hover-glow {
-      @apply transition-all duration-300;
-    }
-
-    .hover-glow:hover {
-      box-shadow: 0 0 20px rgba(var(--primary), 0.3);
-    }
-
-    .hover-brightness {
-      @apply transition-all duration-200 hover:brightness-110;
-    }
+    @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10;
   }
 
   /* Smooth transitions */
@@ -184,45 +159,6 @@
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
-    max-width: 100vw;
-  }
-
-  /* Improved typography for mobile */
-  h1, h2, h3, h4, h5, h6 {
-    @apply leading-tight sm:leading-snug;
-  }
-
-  p, li, span {
-    @apply leading-relaxed;
-  }
-
-  /* Prevent text overflow */
-  p, span, div {
-    @apply break-words;
-    overflow-wrap: anywhere;
-  }
-
-  /* Responsive font scaling */
-  html {
-    font-size: 16px;
-  }
-
-  @media (max-width: 640px) {
-    html {
-      font-size: 15px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    html {
-      font-size: 17px;
-    }
-  }
-
-  @media (min-width: 1536px) {
-    html {
-      font-size: 18px;
-    }
   }
 
   /* Improved keyboard focus indicators for accessibility */

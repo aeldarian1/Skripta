@@ -14,7 +14,6 @@ export async function login(
 ) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
-
   const validation = loginSchema.safeParse({ email, password });
 
   if (!validation.success) {
@@ -37,6 +36,28 @@ export async function login(
     // Sign out the user since they haven't verified their email
     await supabase.auth.signOut();
     return { error: 'Molimo potvrdite svoj email prije prijave. Provjerite svoju poštu.' };
+  }
+
+  // Enforce profile-level verification flag as well
+  if (data.user) {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('email_verified')
+      .eq('id', data.user.id)
+      .maybeSingle();
+
+    if (profileError) {
+      console.error('Profile fetch error during login:', profileError);
+    }
+
+    const emailVerified = (profile as { email_verified?: boolean } | null)?.email_verified;
+
+    if (!emailVerified) {
+      await supabase.auth.signOut();
+      // Re-send verification email without requiring session
+      await sendVerificationEmail(data.user.id, true);
+      return { error: 'Molimo potvrdite svoj email prije prijave. Poslali smo vam novi kod.' };
+    }
   }
 
   // Revalidate forum page to show updated user state

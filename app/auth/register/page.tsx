@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { register } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -14,15 +14,16 @@ import { PasswordInput } from '@/components/auth/password-input';
 import { PasswordStrengthIndicator } from '@/components/auth/password-strength-indicator';
 import { UsernameInput } from '@/components/auth/username-input';
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
+  const isDisabled = pending || disabled;
   return (
     <Button
       type="submit"
       variant="gradient"
       size="lg"
       className="w-full"
-      disabled={pending}
+      disabled={isDisabled}
     >
       {pending ? (
         <>
@@ -51,6 +52,65 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [emailChecking, setEmailChecking] = useState(false);
+  const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
+  const [usernameLength, setUsernameLength] = useState(0);
+
+  // Restore form data from sessionStorage on mount
+  useEffect(() => {
+    const saved = sessionStorage.getItem('registrationFormData');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        setFormData(data);
+        setUsernameLength(data.username?.length || 0);
+      } catch (e) {
+        console.error('Failed to restore form data:', e);
+      }
+    }
+  }, []);
+
+  // Save form data to sessionStorage on change
+  useEffect(() => {
+    if (formData.email || formData.username || formData.full_name) {
+      sessionStorage.setItem('registrationFormData', JSON.stringify(formData));
+    }
+  }, [formData]);
+
+  // Clear sessionStorage on successful registration
+  useEffect(() => {
+    if ((state as any)?.success) {
+      sessionStorage.removeItem('registrationFormData');
+    }
+  }, [state]);
+
+  useEffect(() => {
+    const checkEmail = async () => {
+      if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        setEmailAvailable(null);
+        return;
+      }
+
+      setEmailChecking(true);
+      try {
+        const res = await fetch('/api/check-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email }),
+        });
+        const data = await res.json();
+        setEmailAvailable(data.available);
+      } catch (error) {
+        console.error('Email check failed:', error);
+        setEmailAvailable(null);
+      } finally {
+        setEmailChecking(false);
+      }
+    };
+
+    const timer = setTimeout(checkEmail, 500);
+    return () => clearTimeout(timer);
+  }, [formData.email]);
 
   const validateField = (name: string, value: string) => {
     const newErrors = { ...errors };
@@ -90,6 +150,10 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
+    if (name === 'username') {
+      setUsernameLength(value.length);
+    }
+
     if (touched[name]) {
       validateField(name, value);
     }
@@ -119,7 +183,7 @@ export default function RegisterPage() {
         </CardHeader>
 
         <form action={formAction}>
-          <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
+          <CardContent className="space-y-3 px-4 sm:px-6">
             {state?.error && (
               <div className={`p-3 rounded-lg border animate-slide-up ${
                 isSuccess
@@ -144,8 +208,8 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email adresa
+              <Label htmlFor="email" className="text-sm font-bold text-gray-900 dark:text-white">
+                Email adresa <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
@@ -153,8 +217,8 @@ export default function RegisterPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="ime.prezime@example.com"
-                  className={`h-11 text-base pl-10 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+                  placeholder="ime.prezime@student.hr"
+                  className={`h-11 text-base pl-10 ${errors.email ? 'border-red-500 focus-visible:ring-red-500' : emailAvailable === true ? 'border-green-500 focus-visible:ring-green-500' : ''}`}
                   autoComplete="email"
                   inputMode="email"
                   value={formData.email}
@@ -171,14 +235,26 @@ export default function RegisterPage() {
                   {errors.email}
                 </p>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Koristite vašu službenu studentsku email adresu
-              </p>
+              {emailChecking && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">Provjera dostupnosti...</p>
+              )}
+              {emailAvailable === false && !emailChecking && (
+                <p className="text-xs text-red-500 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  Email je već registriran
+                </p>
+              )}
+              {emailAvailable === true && !emailChecking && (
+                <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Email je dostupan
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-medium">
-                Korisničko ime
+              <Label htmlFor="username" className="text-sm font-bold text-gray-900 dark:text-white">
+                Korisničko ime <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 w-4 h-4 text-gray-400 z-10" />
@@ -189,22 +265,34 @@ export default function RegisterPage() {
                     placeholder="korisnik123"
                     className="h-11 text-base pl-0"
                     autoComplete="username"
-                    pattern="[a-zA-Z][a-zA-Z0-9_-]{2,19}"
+                    pattern="[A-Za-z][A-Za-z0-9_\-]{2,19}"
                     minLength={3}
                     maxLength={20}
                     required
+                    value={formData.username}
+                    onChange={handleChange}
                     onValidationChange={setIsUsernameValid}
                   />
                 </div>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                3-20 znakova, počinje slovom, samo slova, brojevi, _ i -
-              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Počinje slovom, slova/brojevi/_ i -
+                </p>
+                <p className={`text-xs tabular-nums ${
+                  usernameLength === 0 ? 'text-gray-400' :
+                  usernameLength < 3 ? 'text-red-500' :
+                  usernameLength > 20 ? 'text-red-500' :
+                  'text-gray-500 dark:text-gray-400'
+                }`}>
+                  {usernameLength}/20
+                </p>
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="full_name" className="text-sm font-medium">
-                Puno ime
+              <Label htmlFor="full_name" className="text-sm font-bold text-gray-900 dark:text-white">
+                Puno ime <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="full_name"
@@ -231,8 +319,8 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Lozinka
+              <Label htmlFor="password" className="text-sm font-bold text-gray-900 dark:text-white">
+                Lozinka <span className="text-red-500">*</span>
               </Label>
               <PasswordInput
                 id="password"
@@ -253,8 +341,8 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                Potvrdi lozinku
+              <Label htmlFor="confirmPassword" className="text-sm font-bold text-gray-900 dark:text-white">
+                Potvrdi lozinku <span className="text-red-500">*</span>
               </Label>
               <PasswordInput
                 id="confirmPassword"
@@ -310,7 +398,7 @@ export default function RegisterPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4 px-4 sm:px-6 pb-5 sm:pb-6">
-            <SubmitButton />
+            <SubmitButton disabled={emailAvailable === false || emailChecking} />
 
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">

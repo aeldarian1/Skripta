@@ -26,7 +26,6 @@ export function TopicActions({ topicId, isAuthor }: TopicActionsProps) {
         onClick={() => setShowReportDialog(true)}
         className="text-gray-500 hover:text-red-500"
         title="Prijavi temu"
-        aria-label="Prijavi neprimjerenu temu"
       >
         <Flag className="w-4 h-4 mr-2" />
         Prijavi

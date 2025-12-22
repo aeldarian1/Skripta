@@ -7,10 +7,7 @@ import {
   LayoutDashboard,
   Users,
   MessageSquare,
-  FolderOpen,
-  Settings,
   BarChart3,
-  Shield,
   ArrowLeft,
 } from 'lucide-react';
 
@@ -60,11 +57,6 @@ export default async function AdminLayout({
       name: 'Odgovori',
       href: '/admin/replies',
       icon: MessageSquare,
-    },
-    {
-      name: 'Kategorije',
-      href: '/admin/categories',
-      icon: FolderOpen,
     },
     {
       name: 'Analitika',

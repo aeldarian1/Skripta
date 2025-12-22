@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Shield, UserX, Search, Ban, UserCheck, AlertTriangle, Clock, X } from 'lucide-react';
 import { updateUserRole, deleteUser, banUser, unbanUser, warnUser, timeoutUser, removeTimeout } from '../actions';
 import { sanitizeSearchQuery } from '@/lib/utils/sanitize';
@@ -268,7 +269,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                   }`}
                 >
                   <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
+                    <Link href={`/forum/user/${user.username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                       <Avatar
                         src={user.avatar_url}
                         alt={user.username}
@@ -276,14 +277,14 @@ export function UserManagementClient({ users }: { users: User[] }) {
                         size="md"
                       />
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                           {user.full_name || user.username}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           @{user.username}
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
                     <div className="text-xs sm:text-sm text-gray-900 dark:text-white">

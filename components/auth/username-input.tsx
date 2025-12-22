@@ -9,18 +9,27 @@ interface UsernameInputProps extends React.InputHTMLAttributes<HTMLInputElement>
   id: string;
   name: string;
   onValidationChange?: (isValid: boolean) => void;
+  value?: string;
 }
 
 export function UsernameInput({
   id,
   name,
   onValidationChange,
+  value: externalValue,
   ...props
 }: UsernameInputProps) {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(externalValue || '');
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [validationError, setValidationError] = useState<string>('');
+
+  // Sync internal state with external value when it changes
+  useEffect(() => {
+    if (externalValue !== undefined && externalValue !== username) {
+      setUsername(externalValue);
+    }
+  }, [externalValue]);
 
   const checkUsernameAvailability = useCallback(
     debounce(async (value: string) => {

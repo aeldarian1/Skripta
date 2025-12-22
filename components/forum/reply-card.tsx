@@ -324,8 +324,8 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
 
   return (
     <Card id={`reply-${reply.id}`} className={`border-2 shadow-md hover:shadow-lg transition-all duration-300 ${isSolution ? 'border-green-300 dark:border-green-800 bg-green-50/30 dark:bg-green-900/10' : 'border-gray-200 dark:border-gray-700'}`}>
-      <CardContent className="p-2.5 sm:p-5">
-        <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3.5">
+      <CardContent className="p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           {/* Mobile: Horizontal voting bar */}
           <div className="flex sm:hidden items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-800">
             <Button
@@ -333,15 +333,14 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
               size="sm"
               onClick={() => handleVote(1)}
               disabled={!isLoggedIn || isVoting}
-              className={`h-10 px-3 transition-all ${
+              className={`h-8 px-3 transition-all ${
                 currentVote === 1 ? 'scale-110 shadow-md' : ''
               } ${isVoting ? 'opacity-50 cursor-wait' : ''} ${
                 !isLoggedIn ? 'cursor-not-allowed' : 'hover:scale-105'
               } ${upvoteAnimation}`}
               title={!isLoggedIn ? 'Prijavite se da biste glasali' : 'Sviđa mi se'}
-              aria-label={`Glasa za odgovor, trenutno ${upvotes} pozitivnih glasova`}
             >
-              <ThumbsUp className={`w-4 h-4 mr-1 ${isVoting ? 'animate-pulse' : ''}`} />
+              <ThumbsUp className={`w-3.5 h-3.5 mr-1 ${isVoting ? 'animate-pulse' : ''}`} />
               <span className="text-sm">{upvotes}</span>
             </Button>
             <span className="text-base font-semibold bg-gradient-to-br from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
@@ -352,15 +351,14 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
               size="sm"
               onClick={() => handleVote(-1)}
               disabled={!isLoggedIn || isVoting}
-              className={`h-10 px-3 transition-all ${
+              className={`h-8 px-3 transition-all ${
                 currentVote === -1 ? 'scale-110 shadow-md' : ''
               } ${isVoting ? 'opacity-50 cursor-wait' : ''} ${
                 !isLoggedIn ? 'cursor-not-allowed' : 'hover:scale-105'
               } ${downvoteAnimation}`}
               title={!isLoggedIn ? 'Prijavite se da biste glasali' : 'Ne sviđa mi se'}
-              aria-label={`Glasa protiv odgovora, trenutno ${downvotes} negativnih glasova`}
             >
-              <ThumbsDown className={`w-4 h-4 mr-1 ${isVoting ? 'animate-pulse' : ''}`} />
+              <ThumbsDown className={`w-3.5 h-3.5 mr-1 ${isVoting ? 'animate-pulse' : ''}`} />
               <span className="text-sm">{downvotes}</span>
             </Button>
           </div>
@@ -380,7 +378,6 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
                 !isLoggedIn ? 'cursor-not-allowed opacity-40' : ''
               } ${upvoteAnimation}`}
               title={!isLoggedIn ? 'Prijavite se da biste glasali' : 'Sviđa mi se'}
-              aria-label={`Glasa za odgovor, trenutno ${upvotes} pozitivnih glasova`}
             >
               <ThumbsUp className={`w-4 h-4 ${isVoting ? 'animate-pulse' : ''}`} />
             </Button>
@@ -400,46 +397,30 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
                 !isLoggedIn ? 'cursor-not-allowed opacity-40' : ''
               } ${downvoteAnimation}`}
               title={!isLoggedIn ? 'Prijavite se da biste glasali' : 'Ne sviđa mi se'}
-              aria-label={`Glasa protiv odgovora, trenutno ${downvotes} negativnih glasova`}
             >
               <ThumbsDown className={`w-4 h-4 ${isVoting ? 'animate-pulse' : ''}`} />
             </Button>
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2 p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800/50 dark:to-transparent rounded-xl border-l-4 border-blue-500">
+            <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2 p-3 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-800/50 dark:to-transparent rounded-lg border-l-4 border-blue-500">
               <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                {reply.author?.username ? (
-                  <Link href={`/forum/user/${reply.author.username}`} className="flex-shrink-0 transition-transform hover:scale-110">
-                    <Avatar
-                      src={reply.author?.avatar_url}
-                      alt={reply.author?.username || 'User'}
-                      username={reply.author?.username}
-                      size="sm"
-                    />
-                  </Link>
-                ) : (
+                <Link href={`/forum/user/${reply.author?.username}`} className="flex-shrink-0 transition-transform hover:scale-110">
                   <Avatar
                     src={reply.author?.avatar_url}
                     alt={reply.author?.username || 'User'}
                     username={reply.author?.username}
                     size="sm"
                   />
-                )}
-                <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                </Link>
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    {reply.author?.username ? (
-                      <Link
-                        href={`/forum/user/${reply.author.username}`}
-                        className="font-bold text-sm sm:text-base text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                      >
-                        {reply.author.username}
-                      </Link>
-                    ) : (
-                      <span className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">
-                        Nepoznati korisnik
-                      </span>
-                    )}
+                    <Link
+                      href={`/forum/user/${reply.author?.username}`}
+                      className="font-bold text-sm sm:text-base text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {reply.author?.username}
+                    </Link>
                     {reply.author?.reputation > 0 && (
                       <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 text-yellow-700 dark:text-yellow-300 rounded-full font-bold shadow-sm ring-1 ring-yellow-500/20">
                         ⭐ {reply.author.reputation}
@@ -569,7 +550,7 @@ export const ReplyCard = memo(function ReplyCard({ reply, userVote, isLoggedIn, 
             <AdvancedAttachmentList attachments={reply.attachments || []} />
 
             {/* Reaction Picker */}
-            <div className="mt-2.5 pt-2.5 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
               <ReactionPicker
                 replyId={reply.id}
                 reactions={reply.reactions || []}

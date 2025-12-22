@@ -33,6 +33,8 @@ export async function updateProfile(formData: FormData) {
   const profile_color = formData.get('profile_color') as string;
   const avatar_url = formData.get('avatar_url') as string;
   const profile_banner_url = formData.get('profile_banner_url') as string;
+  const university_id = formData.get('university_id') as string;
+  const faculty_id = formData.get('faculty_id') as string;
 
   const rawData = {
     full_name: full_name || '',
@@ -79,6 +81,8 @@ export async function updateProfile(formData: FormData) {
     academic_interests: data.academic_interests ?? null,
     skills: data.skills ?? null,
     profile_color: data.profile_color || '#3B82F6',
+    university_id: university_id && university_id.trim() !== '' ? university_id : null,
+    faculty_id: faculty_id && faculty_id.trim() !== '' ? faculty_id : null,
   };
 
   // Handle image URLs - update if provided, set to null if explicitly empty string

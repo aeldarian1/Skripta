@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { Users, MessageSquare, MessagesSquare, TrendingUp, Flag, Shield } from 'lucide-react';
+import { Users, MessageSquare, MessagesSquare, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar } from '@/components/ui/avatar';
 
@@ -254,68 +254,6 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-          Brze Akcije
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
-          <Link
-            href="/admin/users"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
-          >
-            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Upravljaj Korisnicima
-            </span>
-          </Link>
-          <Link
-            href="/admin/topics"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 transition-colors"
-          >
-            <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Moderiraj Teme
-            </span>
-          </Link>
-          <Link
-            href="/admin/categories"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors"
-          >
-            <MessagesSquare className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Uredi Kategorije
-            </span>
-          </Link>
-          <Link
-            href="/admin/analytics"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-500 transition-colors"
-          >
-            <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Pregledaj Analitiku
-            </span>
-          </Link>
-          <Link
-            href="/admin/reports"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-red-500 dark:hover:border-red-500 transition-colors"
-          >
-            <Flag className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Prijave Sadrzaja
-            </span>
-          </Link>
-          <Link
-            href="/admin/moderation"
-            className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-colors"
-          >
-            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white text-center">
-              Filter Sadržaja
-            </span>
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

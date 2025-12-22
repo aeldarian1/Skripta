@@ -83,6 +83,12 @@ export async function Navbar() {
               >
                 Ljestvica
               </NavLink>
+              <NavLink
+                href="/forum/search"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
+              >
+                Pretraži
+              </NavLink>
               {profile?.role === 'admin' && (
                 <NavLink
                   href="/admin"
@@ -98,22 +104,6 @@ export async function Navbar() {
           <div className="hidden md:flex items-center gap-3 lg:gap-4">
             {user && profile ? (
               <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  title="Pretraži (/)"
-                  className="hidden lg:inline-flex gap-2"
-                >
-                  <Link href="/forum/search">
-                    <Search className="w-4 h-4" />
-                    <span>Pretraži</span>
-                    <span className="ml-1 text-[11px] text-gray-500 border border-gray-300 dark:border-gray-700 px-1 rounded">/</span>
-                  </Link>
-                </Button>
-                <Link href="/forum/new">
-                  <Button variant="gradient" size="sm">Nova tema</Button>
-                </Link>
                 <NavbarBookmarkButton />
                 <Link href="/messages" title="Poruke">
                   <Button variant="ghost" size="sm">

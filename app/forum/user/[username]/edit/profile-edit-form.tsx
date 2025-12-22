@@ -27,9 +27,42 @@ type Profile = {
   academic_interests: string | null;
   skills: string | null;
   profile_color: string;
+  university_id: string | null;
+  faculty_id: string | null;
 };
 
-export function ProfileEditForm({ profile }: { profile: Profile }) {
+type University = {
+  id: string;
+  name: string;
+  slug: string;
+  city: string;
+  description: string | null;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+};
+
+type Faculty = {
+  id: string;
+  name: string;
+  slug: string;
+  abbreviation: string | null;
+  description: string | null;
+  university_id: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export function ProfileEditForm({
+  profile,
+  universities,
+  faculties,
+}: {
+  profile: Profile;
+  universities: University[];
+  faculties: Faculty[];
+}) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +73,17 @@ export function ProfileEditForm({ profile }: { profile: Profile }) {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const [removeBanner, setRemoveBanner] = useState(false);
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string>(
+    profile.university_id || ''
+  );
+  const [selectedFacultyId, setSelectedFacultyId] = useState<string>(
+    profile.faculty_id || ''
+  );
+
+  // Filter faculties based on selected university
+  const filteredFaculties = selectedUniversityId
+    ? faculties.filter((f) => f.university_id === selectedUniversityId)
+    : [];
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -87,6 +131,10 @@ export function ProfileEditForm({ profile }: { profile: Profile }) {
       } else if (bannerUrl) {
         formData.set('profile_banner_url', bannerUrl);
       }
+
+      // Add university_id and faculty_id to form data
+      formData.set('university_id', selectedUniversityId || '');
+      formData.set('faculty_id', selectedFacultyId || '');
 
       // Update profile with new data
       const result = await updateProfile(formData);
@@ -247,37 +295,71 @@ export function ProfileEditForm({ profile }: { profile: Profile }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
-                htmlFor="university"
+                htmlFor="university_id"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
                 Sveučilište
               </label>
-              <input
-                type="text"
-                id="university"
-                name="university"
-                defaultValue={profile.university || ''}
-                placeholder="npr. Sveučilište u Zagrebu"
+              <select
+                id="university_id"
+                name="university_id"
+                value={selectedUniversityId}
+                onChange={(e) => {
+                  setSelectedUniversityId(e.target.value);
+                  // Reset faculty when university changes
+                  setSelectedFacultyId('');
+                }}
                 className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
+              >
+                <option value="">Odaberi sveučilište</option>
+                {universities.map((uni) => (
+                  <option key={uni.id} value={uni.id}>
+                    {uni.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label
-                htmlFor="study_program"
+                htmlFor="faculty_id"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Studijski Program
+                Fakultet
               </label>
-              <input
-                type="text"
-                id="study_program"
-                name="study_program"
-                defaultValue={profile.study_program || ''}
-                placeholder="npr. Računarstvo"
-                className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
+              <select
+                id="faculty_id"
+                name="faculty_id"
+                value={selectedFacultyId}
+                onChange={(e) => setSelectedFacultyId(e.target.value)}
+                disabled={!selectedUniversityId}
+                className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Odaberi fakultet</option>
+                {filteredFaculties.map((fac) => (
+                  <option key={fac.id} value={fac.id}>
+                    {fac.name}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="study_program"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Studijski Program
+            </label>
+            <input
+              type="text"
+              id="study_program"
+              name="study_program"
+              defaultValue={profile.study_program || ''}
+              placeholder="npr. Računarstvo"
+              className="w-full px-3 py-2 h-11 text-base border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

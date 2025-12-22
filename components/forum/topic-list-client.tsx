@@ -49,133 +49,112 @@ export function TopicListClient({ topics, totalCount, solvedCount, unsolvedCount
 
   return (
     <div>
-      {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-800">
+      {/* Filter Tabs - Enhanced Typography */}
+      <div className="flex gap-2 mb-8 border-b-2 border-gray-200 dark:border-gray-700">
         <button
           onClick={() => setCurrentFilter('all')}
-          className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+          className={`px-6 py-3 font-bold text-base transition-all border-b-3 ${
             currentFilter === 'all'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
           }`}
         >
-          Sve ({totalCount})
+          Sve <span className="font-extrabold">({totalCount})</span>
         </button>
         <button
           onClick={() => setCurrentFilter('unsolved')}
-          className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+          className={`px-6 py-3 font-bold text-base transition-all border-b-3 ${
             currentFilter === 'unsolved'
-              ? 'border-orange-600 text-orange-600'
-              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'border-orange-600 text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20'
+              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
           }`}
         >
-          Neriješeno ({unsolvedCount})
+          Neriješeno <span className="font-extrabold">({unsolvedCount})</span>
         </button>
         <button
           onClick={() => setCurrentFilter('solved')}
-          className={`px-4 py-2 font-medium transition-colors border-b-2 ${
+          className={`px-6 py-3 font-bold text-base transition-all border-b-3 ${
             currentFilter === 'solved'
-              ? 'border-green-600 text-green-600'
-              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'border-green-600 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20'
+              : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50'
           }`}
         >
-          Riješeno ({solvedCount})
+          Riješeno <span className="font-extrabold">({solvedCount})</span>
         </button>
       </div>
 
-      {/* Topic List */}
-      <div className="space-y-4">
-        {filteredTopics.length === 0 && (
-          <div className="p-6 sm:p-8 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-center text-gray-600 dark:text-gray-300">
-            <p className="text-lg font-semibold">Nema tema za prikaz</p>
-            <p className="text-sm mt-1">Promijeni filter ili dodaj novu temu.</p>
-          </div>
-        )}
-
+      {/* Topic List - Enhanced Typography & Contrast */}
+      <div className="space-y-5">
         {filteredTopics.map((topic) => (
           <div
             key={topic.id}
-            className="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-600 transition-all hover:shadow-lg"
+            className="p-5 sm:p-7 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-xl hover:-translate-y-1"
           >
-            <div className="flex items-start gap-3 sm:gap-4">
-              {topic.author?.username ? (
-                <Link href={`/forum/user/${topic.author.username}`} className="flex-shrink-0">
-                  <Avatar
-                    src={topic.author?.avatar_url}
-                    alt={topic.author?.username || 'User'}
-                    username={topic.author?.username}
-                    size="md"
-                  />
-                </Link>
-              ) : (
+            <div className="flex items-start gap-4 sm:gap-5">
+              <Link href={`/forum/user/${topic.author?.username}`} className="flex-shrink-0">
                 <Avatar
                   src={topic.author?.avatar_url}
                   alt={topic.author?.username || 'User'}
                   username={topic.author?.username}
                   size="md"
                 />
-              )}
+              </Link>
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap mb-2">
+                <div className="flex items-center gap-2 flex-wrap mb-3">
                   <Link
                     href={`/forum/category/${topic.category?.slug}`}
-                    className="px-3 py-1 text-sm font-semibold rounded-full hover:opacity-80 transition-opacity"
+                    className="px-3.5 py-1.5 text-sm font-bold rounded-full hover:opacity-80 transition-all hover:scale-105 shadow-sm"
                     style={{
-                      backgroundColor: topic.category?.color + '20',
+                      backgroundColor: topic.category?.color + '25',
                       color: topic.category?.color,
+                      border: `2px solid ${topic.category?.color}40`,
                     }}
                   >
                     {topic.category?.icon} {topic.category?.name}
                   </Link>
                   {topic.has_solution && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">
-                      <CheckCircle className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full border-2 border-green-300 dark:border-green-700">
+                      <CheckCircle className="w-3.5 h-3.5" />
                       Riješeno
                     </span>
                   )}
                   {topic.is_pinned && (
-                    <span className="text-yellow-500 text-sm">📌</span>
+                    <span className="text-yellow-500 text-base">📌</span>
                   )}
                   {topic.is_locked && (
-                    <span className="text-gray-500 text-sm">🔒</span>
+                    <span className="text-gray-500 text-base">🔒</span>
                   )}
                 </div>
 
                 <Link
                   href={`/forum/topic/${topic.slug}`}
-                  className="block mb-2 group"
+                  className="block mb-3 group"
                 >
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words leading-tight">
                     {topic.title}
                   </h3>
                 </Link>
 
-                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 flex-wrap">
-                  <span>
-                    od{' '}
-                    {topic.author?.username ? (
-                      <Link
-                        href={`/forum/user/${topic.author.username}`}
-                        className="font-semibold hover:text-blue-600 dark:hover:text-blue-400"
-                      >
-                        {topic.author.username}
-                      </Link>
-                    ) : (
-                      <span className="font-semibold">
-                        Nepoznati korisnik
-                      </span>
-                    )}
+                <div className="flex items-center gap-5 text-sm font-medium text-gray-600 dark:text-gray-400 flex-wrap">
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-gray-500 dark:text-gray-500">od</span>
+                    <Link
+                      href={`/forum/user/${topic.author?.username}`}
+                      className="font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {topic.author?.username}
+                    </Link>
                   </span>
-                  <span className="flex items-center gap-1">
-                    <MessageSquare className="w-4 h-4" />
-                    {topic.reply_count}
+                  <span className="flex items-center gap-1.5 font-semibold">
+                    <MessageSquare className="w-4 h-4 text-blue-500" />
+                    <span className="text-gray-900 dark:text-white">{topic.reply_count}</span>
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {topic.view_count}
+                  <span className="flex items-center gap-1.5 font-semibold">
+                    <Eye className="w-4 h-4 text-purple-500" />
+                    <span className="text-gray-900 dark:text-white">{topic.view_count}</span>
                   </span>
-                  <span className="text-xs">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-500">
                     {new Date(topic.created_at).toLocaleDateString('hr-HR', {
                       year: 'numeric',
                       month: 'short',

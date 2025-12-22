@@ -1,9 +1,12 @@
-import Link from 'next/link';
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { SkriptaLogo } from '@/components/branding/skripta-logo';
 import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function TermsPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -84,12 +87,21 @@ export default function TermsPage() {
         </div>
 
         <div className="flex justify-center">
-          <Link href="/auth/register">
-            <Button variant="outline" size="lg" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Natrag na registraciju
-            </Button>
-          </Link>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="gap-2"
+            onClick={() => {
+              if (window.history.length > 1) {
+                router.back();
+              } else {
+                window.close();
+              }
+            }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Natrag
+          </Button>
         </div>
       </div>
     </div>

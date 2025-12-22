@@ -111,11 +111,10 @@ export default function SearchPage() {
     async function loadData() {
       const supabase = createClient();
 
-      // Load only generic categories (not university-specific)
+      // Load categories
       const { data: categoriesData } = await supabase
         .from('categories')
         .select('id, name, slug, color')
-        .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
         .order('order_index', { ascending: true });
       setCategories(categoriesData || []);
 

@@ -18,8 +18,6 @@ import { PollWidget } from '@/components/forum/poll-widget';
 import { PollCreator } from '@/components/forum/poll-creator';
 import { TypingIndicator } from '@/components/forum/typing-indicator';
 import { getPollDetails } from '@/app/forum/polls/actions';
-import { headers } from 'next/headers';
-import { BackToTop } from '@/components/ui/back-to-top';
 
 // Revalidate every 2 minutes for better cache performance
 export const revalidate = 120;
@@ -109,7 +107,6 @@ export default async function TopicPage({
     supabase
       .from('categories')
       .select('*')
-      .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
       .order('order_index', { ascending: true }),
     // Reactions query - with error handling for when table doesn't exist
     (supabase as any)
@@ -165,15 +162,9 @@ export default async function TopicPage({
   const topicAttachments = allAttachments?.filter((a: any) => a.topic_id === topic.id) || [];
   const replyAttachments = allAttachments?.filter((a: any) => a.reply_id) || [];
 
-  // Get IP address for view tracking
-  const headersList = await headers();
-  const ipAddress = headersList.get('x-forwarded-for')?.split(',')[0] || 
-                    headersList.get('x-real-ip') || 
-                    null;
-
-  // Record unique view with rate limiting (only counts once per hour per user/IP)
+  // Record unique view (only counts once per user/session)
   // Non-blocking: page should load even if view tracking fails
-  recordTopicView(topic.id, ipAddress || undefined).catch(err => console.error('View tracking failed:', err));
+  recordTopicView(topic.id).catch(err => console.error('View tracking failed:', err));
 
   // Map attachments and reactions to replies
   const repliesWithAttachments = (replies || []).map((reply: any) => ({
@@ -242,9 +233,9 @@ export default async function TopicPage({
   const hasSolution = replies?.some((r: any) => r.is_solution);
 
   return (
-    <div className="space-y-4 sm:space-y-5">
+    <div className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <Breadcrumb
           items={[
             { label: 'Forum', href: '/forum' },
@@ -265,10 +256,9 @@ export default async function TopicPage({
         )}
       </div>
 
-      <div className="max-w-5xl mx-auto space-y-4 sm:space-y-5">
-          <Card className="border-2 border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300">
-        <CardContent className="p-3 sm:p-5 md:p-6 lg:p-7">
-          <div className="flex items-center justify-between mb-4 sm:mb-5">
+      <Card className="border-2 border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300">
+        <CardContent className="p-6 sm:p-8">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2 flex-wrap">
               <span
                 className="px-4 py-1.5 text-sm font-bold rounded-full shadow-sm ring-1 ring-black/5 dark:ring-white/10 transition-transform hover:scale-105"
@@ -318,43 +308,29 @@ export default async function TopicPage({
             />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-extrabold mb-6 sm:mb-7 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-300 bg-clip-text text-transparent leading-tight break-words">{topic.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent leading-tight break-words">{topic.title}</h1>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-6 bg-gradient-to-br from-blue-50/50 via-gray-50 to-purple-50/30 dark:from-blue-900/10 dark:via-gray-800/80 dark:to-purple-900/10 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/30 rounded-xl border border-gray-200 dark:border-gray-700 mb-6">
             <div className="flex items-center gap-4">
-              {topic.author?.username ? (
-                <Link href={`/forum/user/${topic.author.username}`} className="flex-shrink-0 transition-transform hover:scale-105">
-                  <Avatar
-                    src={topic.author?.avatar_url}
-                    alt={topic.author?.username || 'User'}
-                    username={topic.author?.username}
-                    size="md"
-                  />
-                </Link>
-              ) : (
+              <Link href={`/forum/user/${topic.author?.username}`} className="flex-shrink-0 transition-transform hover:scale-110">
                 <Avatar
                   src={topic.author?.avatar_url}
                   alt={topic.author?.username || 'User'}
                   username={topic.author?.username}
                   size="md"
                 />
-              )}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  {topic.author?.username ? (
-                    <Link
-                      href={`/forum/user/${topic.author.username}`}
-                      className="font-bold text-base text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      {topic.author.username}
-                    </Link>
-                  ) : (
-                    <span className="font-bold text-base text-gray-900 dark:text-white">
-                      Nepoznati korisnik
-                    </span>
-                  )}
+              </Link>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Autor:</span>
+                  <Link
+                    href={`/forum/user/${topic.author?.username}`}
+                    className="font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    {topic.author?.username}
+                  </Link>
                   {topic.author?.reputation > 0 && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 text-sm font-bold bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 text-yellow-700 dark:text-yellow-300 rounded-full shadow-sm ring-1 ring-yellow-500/20">
+                    <span className="px-2 py-0.5 text-xs font-bold bg-gradient-to-r from-yellow-100 to-amber-100 dark:from-yellow-900 dark:to-amber-900 text-yellow-700 dark:text-yellow-300 rounded-full shadow-sm ring-1 ring-yellow-500/20">
                       ⭐ {topic.author.reputation}
                     </span>
                   )}
@@ -373,19 +349,19 @@ export default async function TopicPage({
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-              <div className="flex items-center gap-2.5 px-4 py-2 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-800 shadow-sm whitespace-nowrap">
-                <MessageSquare className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                <span className="font-bold text-gray-900 dark:text-white">{topic.reply_count}</span>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">odgovora</span>
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <MessageSquare className="w-4 h-4 text-blue-500" />
+                <span className="font-semibold text-gray-900 dark:text-white">{topic.reply_count}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">odgovora</span>
               </div>
-              <div className="flex items-center gap-2.5 px-4 py-2 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl border border-purple-200 dark:border-purple-800 shadow-sm whitespace-nowrap">
-                <svg className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <span className="font-bold text-gray-900 dark:text-white">{topic.view_count}</span>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">pregleda</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{topic.view_count}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">pregleda</span>
               </div>
             </div>
           </div>
@@ -403,7 +379,7 @@ export default async function TopicPage({
           <AdvancedAttachmentList attachments={topicAttachments || []} />
           
           {/* Topic Reactions */}
-          <div className="mt-6 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <ReactionPicker
               topicId={topic.id}
               reactions={topicReactions || []}
@@ -465,8 +441,6 @@ export default async function TopicPage({
           </CardContent>
         </Card>
       )}
-      </div>
-      <BackToTop />
     </div>
   );
 }

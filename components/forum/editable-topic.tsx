@@ -21,7 +21,7 @@ export function EditableTopic({
   const wasEdited = editedAt && editedAt !== createdAt;
 
   return (
-    <div className="min-h-[120px] prose dark:prose-invert max-w-none mb-6">
+    <div>
       <MarkdownRenderer content={content} />
 
       {wasEdited && (

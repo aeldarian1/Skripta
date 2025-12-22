@@ -5,7 +5,13 @@
       "Bash(npm uninstall:*)",
       "Bash(find:*)",
       "Bash(npm run build:*)",
-      "Bash(node:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm --version:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:www.aaiedu.hr)",
+      "WebSearch",
+      "WebFetch(domain:django-aaieduhr.readthedocs.io)",
+      "WebFetch(domain:wiki.srce.hr)"
     ],
     "deny": [],
     "ask": []

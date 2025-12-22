@@ -85,7 +85,7 @@ export default function LoginPage() {
         </CardHeader>
 
         <form action={formAction}>
-          <CardContent className="space-y-4 px-4 sm:px-6">
+          <CardContent className="space-y-3 px-4 sm:px-6">
             {showSuccessMessage && (
               <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 animate-slide-up">
                 <div className="flex items-start gap-2">
@@ -129,7 +129,7 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="ime.prezime@example.com"
+                  placeholder="ime.prezime@student.hr"
                   className={`h-11 text-base pl-10 ${emailError ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                   autoComplete="email"
                   inputMode="email"

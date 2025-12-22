@@ -36,6 +36,17 @@ export default async function EditProfilePage({
     redirect(`/forum/user/${username}`);
   }
 
+  // Fetch universities and faculties for dropdowns
+  const { data: universities } = await supabase
+    .from('universities')
+    .select('*')
+    .order('order_index', { ascending: true });
+
+  const { data: faculties } = await supabase
+    .from('faculties')
+    .select('*')
+    .order('order_index', { ascending: true });
+
   return (
     <div className="max-w-2xl mx-auto py-4 sm:py-6 md:py-8 px-3 sm:px-4">
       <Card>
@@ -43,7 +54,11 @@ export default async function EditProfilePage({
           <CardTitle className="text-xl sm:text-2xl">Uredi Profil</CardTitle>
         </CardHeader>
         <CardContent className="px-4 sm:px-6 pb-5 sm:pb-6">
-          <ProfileEditForm profile={profile} />
+          <ProfileEditForm
+            profile={profile}
+            universities={universities || []}
+            faculties={faculties || []}
+          />
         </CardContent>
       </Card>
     </div>

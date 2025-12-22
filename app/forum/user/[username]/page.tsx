@@ -32,12 +32,6 @@ export const revalidate = 60;
 
 export default async function Page({ params }: PageProps) {
   const { username } = await params;
-  
-  // Validate username parameter
-  if (!username || username === 'undefined' || username === 'null') {
-    notFound();
-  }
-  
   const supabase = await createServerSupabaseClient();
 
   // Get current user
@@ -45,15 +39,18 @@ export default async function Page({ params }: PageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Get user profile
-  const { data: profile, error }: { data: any; error: any } = await supabase
+  // Get user profile with university and faculty data
+  const { data: profile }: { data: any } = await supabase
     .from('profiles')
-    .select('*')
+    .select(`
+      *,
+      university:universities(id, name, slug, city),
+      faculty:faculties(id, name, slug, abbreviation)
+    `)
     .eq('username', username)
-    .maybeSingle();
+    .single();
 
-  if (!profile || error) {
-    console.error('Profile fetch error for username:', username, error);
+  if (!profile) {
     notFound();
   }
 
@@ -436,17 +433,23 @@ export default async function Page({ params }: PageProps) {
           </div>
 
           {/* Academic Info */}
-          {(profile.university || profile.study_program || profile.year_of_study || profile.graduation_year) && (
+          {(profile.university || profile.faculty || profile.study_program || profile.year_of_study || profile.graduation_year) && (
             <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="w-5 h-5 text-blue-600" />
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Akademske Informacije</h3>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {profile.university && (
                   <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-800">
                     <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Sveučilište</span>
-                    <p className="font-bold text-gray-900 dark:text-white mt-1">{profile.university}</p>
+                    <p className="font-bold text-gray-900 dark:text-white mt-1">{profile.university.name}</p>
+                  </div>
+                )}
+                {profile.faculty && (
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 border border-indigo-200 dark:border-indigo-800">
+                    <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">Fakultet</span>
+                    <p className="font-bold text-gray-900 dark:text-white mt-1">{profile.faculty.name}</p>
                   </div>
                 )}
                 {profile.study_program && (
