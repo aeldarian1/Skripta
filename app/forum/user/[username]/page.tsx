@@ -39,13 +39,14 @@ export default async function Page({ params }: PageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Get user profile with university and faculty data
+  // Get user profile with university, faculty and study program data
   const { data: profile }: { data: any } = await supabase
     .from('profiles')
     .select(`
       *,
       university:universities(id, name, slug, city),
-      faculty:faculties(id, name, slug, abbreviation)
+      faculty:faculties(id, name, slug, abbreviation),
+      study_program:study_programs(id, name, abbreviation, degree_level)
     `)
     .eq('username', username)
     .single();
@@ -455,7 +456,10 @@ export default async function Page({ params }: PageProps) {
                 {profile.study_program && (
                   <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-800">
                     <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wide">Program</span>
-                    <p className="font-bold text-gray-900 dark:text-white mt-1">{profile.study_program}</p>
+                    <p className="font-bold text-gray-900 dark:text-white mt-1">{profile.study_program.name}</p>
+                    {profile.study_program.abbreviation && (
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">({profile.study_program.abbreviation})</p>
+                    )}
                   </div>
                 )}
                 {profile.year_of_study && (
