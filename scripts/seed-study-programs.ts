@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/database';
+import type { Database } from '../types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -61,7 +61,9 @@ async function seedStudyPrograms() {
   }
 
   // Create a map of faculty slug to faculty ID
-  const facultyMap = new Map(faculties.map(f => [f.slug, f.id]));
+  const facultyMap = new Map(
+    faculties.map((f: any) => [f.slug, f.id])
+  );
 
   // Define all study programs grouped by faculty slug
   const programsByFaculty: Record<string, Omit<StudyProgramInsert, 'faculty_id'>[]> = {
@@ -205,12 +207,14 @@ async function seedStudyPrograms() {
     console.log(`📝 Inserting ${programs.length} programs for ${facultySlug}...`);
 
     for (const program of programs) {
+      const programData: StudyProgramInsert = {
+        ...program,
+        faculty_id: facultyId,
+      };
+
       const { error } = await supabase
         .from('study_programs')
-        .insert({
-          ...program,
-          faculty_id: facultyId,
-        });
+        .insert(programData as any);
 
       if (error) {
         if (error.code === '23505') {
