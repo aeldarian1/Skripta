@@ -324,11 +324,12 @@ create trigger update_reply_vote_counts_trigger
   after insert or update or delete on votes
   for each row execute procedure update_reply_vote_counts();
 
--- Insert default categories
+-- Insert default categories (with duplicate protection)
 insert into categories (name, slug, description, icon, color, order_index) values
   ('Opće', 'opce', 'Opće rasprave i teme za sve studente', '💬', '#3B82F6', 1),
   ('Pitanja i Odgovori', 'pitanja', 'Postavi pitanje ili pomogni drugima', '❓', '#10B981', 2),
   ('Studij', 'studij', 'Diskusije o studiju, ispitima i kolegijima', '📚', '#8B5CF6', 3),
   ('Karijera', 'karijera', 'Savjeti o karijeri, praksama i poslovima', '💼', '#F59E0B', 4),
   ('Tehnologija', 'tehnologija', 'Tech razgovori i najnovije vijesti', '💻', '#EF4444', 5),
-  ('Off-topic', 'off-topic', 'Casual razgovori i zabava', '🎮', '#6B7280', 6);
+  ('Off-topic', 'off-topic', 'Casual razgovori i zabava', '🎮', '#6B7280', 6)
+on conflict (slug) do nothing;

@@ -1,8 +1,12 @@
 {
   "crons": [
     {
-      "path": "/api/cron/scheduled-tasks",
+      "path": "/api/cron/refresh-stats",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-maintenance",
+      "schedule": "0 3 * * 0"
     }
   ]
 }
