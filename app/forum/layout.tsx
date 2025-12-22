@@ -9,10 +9,11 @@ export default async function ForumLayout({
 }) {
   const supabase = await createServerSupabaseClient();
 
-  // Fetch categories for sidebar
+  // Fetch only generic categories for sidebar
   const { data: categories } = await supabase
     .from('categories')
     .select('id, name, slug, icon, color, description')
+    .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
     .order('order_index', { ascending: true });
 
   // Get topic counts for each category

@@ -72,10 +72,11 @@ export default async function ForumPage({
     { data: trendingTopics },
     { data: recentTopicsData, count: totalTopics }
   ] = await Promise.all([
-    // Get categories (cached by Supabase)
+    // Get only generic categories (not university-specific)
     supabase
       .from('categories')
       .select('id, name, slug, description, icon, color, order_index')
+      .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
       .order('order_index', { ascending: true }),
 
     // Get category stats from optimized function
