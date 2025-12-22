@@ -109,6 +109,7 @@ export default async function TopicPage({
     supabase
       .from('categories')
       .select('*')
+      .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
       .order('order_index', { ascending: true }),
     // Reactions query - with error handling for when table doesn't exist
     (supabase as any)

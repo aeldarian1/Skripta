@@ -21,10 +21,11 @@ export default async function NewTopicServerPage() {
     redirect('/auth/login');
   }
 
-  // Load categories
+  // Load only generic categories (not university-specific)
   const { data: categories } = await supabase
     .from('categories')
     .select('*')
+    .in('slug', ['opce', 'pitanja', 'studij', 'karijera', 'tehnologija', 'off-topic'])
     .order('order_index', { ascending: true });
 
   // Load tags
