@@ -1,0 +1,49 @@
+{
+  "name": "Skripta - Hrvatski Studentski Forum",
+  "short_name": "Skripta",
+  "description": "Najbolja studentska zajednica u Hrvatskoj. Spoji se s kolegama, dijeli znanje, pronađi odgovore.",
+  "start_url": "/forum",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#E53E3E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "640x1136",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["education", "social"],
+  "shortcuts": [
+    {
+      "name": "Nova tema",
+      "short_name": "Nova",
+      "description": "Stvori novu temu",
+      "url": "/forum/new",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pretraži",
+      "short_name": "Traži",
+      "description": "Pretraži forum",
+      "url": "/forum/search",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
