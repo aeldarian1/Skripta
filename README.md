@@ -90,12 +90,31 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tvoj-anon-key
 
 Ovo će kreirati sve tablice, politike, triggere, funkcije, sveučilišta, fakultete i kategorije.
 
+### 6. (Opciono) Kreiraj bot korisnike za testiranje
+
+Za testiranje platforme sa realističnim sadržajem:
+
+1. Idi u Supabase dashboard > **SQL Editor**
+2. Kopiraj cijeli sadržaj iz `supabase/create_bots_with_content.sql`
+3. Zalijepi u SQL Editor i pokreni
+
+Ovo će kreirati 60 bot korisnika sa hrvatskim imenima koji automatski:
+- Kreiraju 30-240 tema sa razgovornim hrvatskim jezikom
+- Postavljaju 180-600 odgovora sa slengom i emojijima
+- Glasaju na 300-900 odgovora
+- Raspoređuju sadržaj preko svih sveučilišta i fakulteta
+
+**Za brisanje bot korisnika:**
+```sql
+-- Pokreni supabase/delete_bot_users.sql
+```
+
 **⚠️ Važno:**
 - Idi na **Authentication > Providers > Email** i **isključi** "Confirm email" ako želiš testirati registraciju bez email potvrde.
 - Notifications SQL mora biti pokrenut nakon schema.sql jer ovisi o tablicama iz schema.sql
 - **Za resetiranje lozinke:** MORA biti isključeno "Secure email change enabled" u Supabase. Vidi [SETUP.md](SETUP.md) za detalje.
 
-### 6. Pokreni development server
+### 7. Pokreni development server
 
 ```bash
 npm run dev
@@ -211,9 +230,16 @@ Nakon registracije:
 
 **✅ Production Ready** - All core features implemented and optimized
 
-### 🆕 Najnovija Ažuriranja (V2.6.0 - 21. prosinac 2025.)
+### 🆕 Najnovija Ažuriranja (V2.6.1 - 23. prosinac 2025.)
 
 **Najnovije značajke:**
+- ✨ **Bot korisnici za testiranje** - SQL skripte za kreiranje 60 bot korisnika sa realističnim hrvatskim imenima i prezimenom
+- ✨ **Automatska generacija sadržaja** - Botovi automatski kreiraju teme (30-240), odgovore (180-600) i glasove (300-900)
+- ✨ **Prirodan ton komunikacije** - Razgovorna hrvatska gramatika sa slengom, tipfelerima i emojijima
+- ✨ **Varijacija u stilu pisanja** - Miješano veliko/malo slovo, različiti tonovi i razine formalnosti
+- ✨ **Dinamički predmeti i profesori** - 33 predmeta i 38 profesorskih referenci (formalni i nadimci) u temama
+
+**Prethodne značajke (V2.6.0):**
 - ✨ **Hijerarhijska struktura foruma** - 4 sveučilišta, 12 fakulteta, 72 kategorije
 - ✨ **Navigacija sveučilište/fakultet** - Intuitivna navigacija kroz akademsku strukturu
 - ✨ **Dropdown odabir fakulteta** - Cascading dropdown u profilu (sveučilište → fakultet)

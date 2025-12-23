@@ -409,13 +409,50 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 
 ---
 
+## V2.6.1 - Bot Korisnici za Testiranje (23. prosinca 2025.)
+
+**Datum objave:** 23. prosinac 2025.
+
+### Dodano
+- SQL sustav za kreiranje bot korisnika za testiranje:
+  - `create_bots_with_content.sql` - Kreira 60 bot korisnika sa sadržajem u jednom izvršavanju
+  - `create_bot_users.sql` - Kreira samo bot korisnike bez sadržaja (standalone opcija)
+  - `create_bot_content.sql` - Generira sadržaj za postojeće bot korisnike (standalone opcija)
+  - `delete_bot_users.sql` - Briše sve bot korisnike i njihov sadržaj
+- Automatska generacija sadržaja:
+  - 30-240 tema po botu sa raznolikim naslovima
+  - 180-600 odgovora sa realističnim diskusijama
+  - 300-900 glasova raspoređenih po odgovorima
+- Prirodan ton komunikacije:
+  - 60 hrvatskih/srpskih imena i 45 prezimena
+  - Razgovorna hrvatska gramatika sa slengom (ajmo, kužim, vidimo se, itd.)
+  - Miješano veliko/malo slovo za prirodniji izgled
+  - Namjerni tipfeleri i neformalan jezik
+  - Emotikoni u odgovorima
+- Dinamički sadržaj:
+  - 33 predmeta (Matematika 1, Programiranje, Baze podataka, itd.)
+  - 38 profesorskih referenci (formalni nazivi i nadimci)
+  - Automatska zamjena [predmet] i [profesor] u temama
+
+### Promijenjeno
+- Ažuriran README.md sa opcionalnim korakom za kreiranje bot korisnika
+- Renumerirani koraci instalacije (korak 7 za pokretanje dev servera)
+
+### Ispravljeno
+- Placeholder zamjena u sadržaju tema (PostgreSQL scope varijabli)
+- Generiranje bot imena (UPDATE profila nakon trigger kreiranja)
+- Dvosmislene reference stupaca u upitima za glasove
+- Hijerarhijska struktura fakulteta za bot teme (faculty_id)
+
+---
+
 ## Statistika Sažetka
 
 - **Ukupno Commitova:** 250+
-- **Razdoblje Razvoja:** 5. studeni 2025. - 21. prosinac 2025. (46 dana)
+- **Razdoblje Razvoja:** 5. studeni 2025. - 23. prosinac 2025. (48 dana)
 - **Glavne Verzije:** 3 (V0, V1, V2)
 - **Manje Verzije:** 11
-- **Patch Verzije:** 1
+- **Patch Verzije:** 2
 - **Primarni Tech Stack:** Next.js, TypeScript, Supabase, Tailwind CSS
 - **Ključne Značajke:** Hijerarhijski forum (sveučilišta/fakulteti), gamifikacija, moderacija sadržaja, mobile-first dizajn
 
@@ -432,7 +469,8 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 | 11. pro 2025. | V2.2.0 | Lansiran sustav gamifikacije |
 | 12. pro 2025. | V2.4.0 | AI asistent (kasnije uklonjen) |
 | 13. pro 2025. | V2.5.1 | Dorada registracije |
-| 21. pro 2025. | V2.6.0 | Trenutna verzija - Hijerarhijski forum |
+| 21. pro 2025. | V2.6.0 | Hijerarhijski forum |
+| 23. pro 2025. | V2.6.1 | Trenutna verzija - Bot korisnici za testiranje |
 
 ---
 
@@ -446,4 +484,4 @@ Ovaj projekt slijedi [Semantičko Verzioniranje](https://semver.org/):
 
 ---
 
-*Zadnje Ažurirano: 21. prosinac 2025.*
+*Zadnje Ažurirano: 23. prosinac 2025.*

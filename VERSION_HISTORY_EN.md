@@ -409,13 +409,50 @@ This document tracks the chronological changes throughout the **Skripta** (Stude
 
 ---
 
+## V2.6.1 - Bot Users for Testing (December 23, 2025)
+
+**Release Date:** December 23, 2025
+
+### Added
+- SQL system for creating bot users for testing:
+  - `create_bots_with_content.sql` - Creates 60 bot users with content in one execution
+  - `create_bot_users.sql` - Creates only bot users without content (standalone option)
+  - `create_bot_content.sql` - Generates content for existing bot users (standalone option)
+  - `delete_bot_users.sql` - Deletes all bot users and their content
+- Automatic content generation:
+  - 30-240 topics per bot with diverse titles
+  - 180-600 replies with realistic discussions
+  - 300-900 votes distributed across replies
+- Natural communication tone:
+  - 60 Croatian/Serbian first names and 45 surnames
+  - Conversational Croatian grammar with slang (ajmo, kužim, vidimo se, etc.)
+  - Mixed upper/lowercase for more natural appearance
+  - Intentional typos and informal language
+  - Emojis in replies
+- Dynamic content:
+  - 33 subjects (Mathematics 1, Programming, Databases, etc.)
+  - 38 professor references (formal names and nicknames)
+  - Automatic [predmet] and [profesor] replacement in topics
+
+### Changed
+- Updated README.md with optional step for creating bot users
+- Renumbered installation steps (step 7 for running dev server)
+
+### Fixed
+- Placeholder replacement in topic content (PostgreSQL variable scope)
+- Bot name generation (UPDATE profiles after trigger creation)
+- Ambiguous column references in vote queries
+- Hierarchical faculty structure for bot topics (faculty_id)
+
+---
+
 ## Summary Statistics
 
 - **Total Commits:** 250+
-- **Development Period:** November 5, 2025 - December 21, 2025 (46 days)
+- **Development Period:** November 5, 2025 - December 23, 2025 (48 days)
 - **Major Versions:** 3 (V0, V1, V2)
 - **Minor Versions:** 11
-- **Patch Versions:** 1
+- **Patch Versions:** 2
 - **Primary Tech Stack:** Next.js, TypeScript, Supabase, Tailwind CSS
 - **Key Features:** Hierarchical forum (universities/faculties), gamification, content moderation, mobile-first design
 
@@ -432,7 +469,8 @@ This document tracks the chronological changes throughout the **Skripta** (Stude
 | Dec 11, 2025 | V2.2.0 | Gamification system launched |
 | Dec 12, 2025 | V2.4.0 | AI assistant (later removed) |
 | Dec 13, 2025 | V2.5.1 | Registration polish |
-| Dec 21, 2025 | V2.6.0 | Current version - Hierarchical forum |
+| Dec 21, 2025 | V2.6.0 | Hierarchical forum |
+| Dec 23, 2025 | V2.6.1 | Current version - Bot users for testing |
 
 ---
 
@@ -446,4 +484,4 @@ This project follows [Semantic Versioning](https://semver.org/):
 
 ---
 
-*Last Updated: December 21, 2025*
+*Last Updated: December 23, 2025*
