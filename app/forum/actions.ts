@@ -311,32 +311,3 @@ export async function markSolutionAction(replyId: string, topicId: string) {
 
   return { success: true };
 }
-
-export async function updateUserFacultyPreference(
-  universityId: string,
-  facultyId: string
-) {
-  const supabase = await createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const { error } = await (supabase as any)
-    .from('profiles')
-    .update({
-      university_id: universityId,
-      faculty_id: facultyId,
-    })
-    .eq('id', user.id);
-
-  if (error) {
-    return { success: false, error: error.message };
-  }
-
-  return { success: true };
-}

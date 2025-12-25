@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation';
 import type { Category, Topic, Profile, University, Faculty } from '@/types/database';
 import { Button } from '@/components/ui/button';
 import { TopicListClient } from '@/components/forum/topic-list-client';
-import { SaveFacultyPreference } from '@/components/forum/save-faculty-preference';
 
 interface TopicWithCategoryAndAuthor extends Topic {
   category: Pick<Category, 'name' | 'slug' | 'color'> | null;
@@ -184,9 +183,6 @@ export default async function FacultyForumPage({ params, searchParams }: PagePro
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Save user's faculty preference */}
-      <SaveFacultyPreference universityId={university.id} facultyId={faculty.id} />
-
       {/* Breadcrumb Navigation */}
       <div className="flex items-center gap-2 text-sm">
         <Link href="/forum/select-university">
