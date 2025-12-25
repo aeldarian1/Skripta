@@ -5,16 +5,18 @@ import Link from 'next/link';
 import { Menu, X, Home, Search, Settings, User, LogOut, Plus, Users, Bookmark, Mail, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar } from '@/components/ui/avatar';
+import { MobileForumMenu } from './mobile-forum-menu';
 import { logout } from '@/app/auth/actions';
-import type { Profile } from '@/types/database';
+import type { Profile, University, Faculty } from '@/types/database';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface MobileNavProps {
   user: SupabaseUser | null;
   profile: Profile | null;
+  universities: (University & { faculties: Faculty[] })[];
 }
 
-export function MobileNav({ user, profile }: MobileNavProps) {
+export function MobileNav({ user, profile, universities }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const closeMenu = () => setIsOpen(false);
@@ -72,14 +74,7 @@ export function MobileNav({ user, profile }: MobileNavProps) {
 
                   {/* Navigation Links */}
                   <div className="space-y-1">
-                    <Link
-                      href="/forum"
-                      onClick={closeMenu}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
-                    >
-                      <Home className="w-5 h-5" />
-                      Forum
-                    </Link>
+                    <MobileForumMenu universities={universities} onNavigate={closeMenu} />
 
                     <Link
                       href="/forum/users"
@@ -155,14 +150,7 @@ export function MobileNav({ user, profile }: MobileNavProps) {
                 <>
                   {/* Guest Navigation */}
                   <div className="space-y-3">
-                    <Link
-                      href="/forum"
-                      onClick={closeMenu}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
-                    >
-                      <Home className="w-5 h-5" />
-                      Forum
-                    </Link>
+                    <MobileForumMenu universities={universities} onNavigate={closeMenu} />
 
                     <Link
                       href="/forum/users"

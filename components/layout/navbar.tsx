@@ -8,10 +8,11 @@ import { NotificationBell } from '@/components/notifications/notification-bell';
 import { NavbarBookmarkButton } from './navbar-bookmark-button';
 import { MobileNav } from './mobile-nav';
 import { NavLink } from './nav-link';
+import { ForumDropdown } from './forum-dropdown';
 import { logout } from '@/app/auth/actions';
 import { MessageSquare, User, LogOut, Search, Settings, Bookmark, Mail } from 'lucide-react';
 import type { Notification } from '@/types/notifications';
-import type { Profile } from '@/types/database';
+import type { Profile, University, Faculty } from '@/types/database';
 
 export async function Navbar() {
   const supabase = await createServerSupabaseClient();
@@ -48,6 +49,24 @@ export async function Navbar() {
     }
   }
 
+  // Fetch universities with their faculties for the forum dropdown
+  const { data: universitiesData } = await supabase
+    .from('universities')
+    .select(`
+      id,
+      name,
+      slug,
+      faculties(id, name, abbreviation, slug)
+    `)
+    .order('name', { ascending: true });
+
+  const universities = (universitiesData || []).map((uni: any) => ({
+    ...uni,
+    faculties: (uni.faculties || []).sort((a: Faculty, b: Faculty) =>
+      (a.abbreviation || a.name).localeCompare(b.abbreviation || b.name)
+    )
+  })) as (University & { faculties: Faculty[] })[];
+
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
@@ -65,12 +84,7 @@ export async function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center gap-4">
-              <NavLink
-                href="/forum"
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
-              >
-                Forum
-              </NavLink>
+              <ForumDropdown universities={universities} />
               <NavLink
                 href="/forum/users"
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
@@ -157,7 +171,7 @@ export async function Navbar() {
                 initialUnreadCount={unreadCount}
               />
             )}
-            <MobileNav user={user} profile={profile} />
+            <MobileNav user={user} profile={profile} universities={universities} />
           </div>
         </div>
       </div>
