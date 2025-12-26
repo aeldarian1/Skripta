@@ -48,16 +48,30 @@ export function ReactionPicker({
       return;
     }
 
-    // Optimistic update
+    // Find any existing reaction by this user (not just same emoji)
     const existingReaction = optimisticReactions.find(
-      (r) => r.emoji === emoji && r.user_id === currentUserId
+      (r) => r.user_id === currentUserId
     );
 
-    if (existingReaction) {
-      // Remove reaction optimistically
+    // Check if user clicked the same emoji they already reacted with
+    const clickedSameEmoji = existingReaction && existingReaction.emoji === emoji;
+
+    if (clickedSameEmoji) {
+      // Remove reaction optimistically (toggling off)
       setOptimisticReactions(optimisticReactions.filter((r) => r.id !== existingReaction.id));
+    } else if (existingReaction) {
+      // User is changing their reaction - replace the old one with new one
+      setOptimisticReactions([
+        ...optimisticReactions.filter((r) => r.id !== existingReaction.id),
+        {
+          id: `temp-${Date.now()}`,
+          emoji,
+          user_id: currentUserId,
+          created_at: new Date().toISOString(),
+        },
+      ]);
     } else {
-      // Add reaction optimistically
+      // Add new reaction optimistically (user has no reaction yet)
       setOptimisticReactions([
         ...optimisticReactions,
         {

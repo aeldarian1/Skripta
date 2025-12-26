@@ -98,17 +98,11 @@ export default async function UsersPage() {
     })
     .slice(0, 10);
 
-  // For "All Users" search, combine all unique users we've fetched
-  const allUserIds = new Set([
-    ...(topByReputation || []).map((u: any) => u.id),
-    ...(activeUserProfiles || []).map((u: any) => u.id),
-    ...(recentUsers || []).map((u: any) => u.id),
-  ]);
-
+  // Fetch ALL users for the "All Users" search section
   const { data: allUserProfiles } = await supabase
     .from('profiles')
     .select('id, username, full_name, avatar_url, reputation, role, created_at')
-    .in('id', Array.from(allUserIds));
+    .order('username', { ascending: true });
 
   const usersWithActivity = (allUserProfiles || []).map((user: any) => {
     const activity = activityMap.get(user.id) || { topics: 0, replies: 0 };

@@ -32,19 +32,34 @@ export async function addReaction(params: {
     return { error: 'Must be logged in to react' };
   }
 
-  // Check if user already reacted with this emoji
-  const { data: existing } = await (supabase as any)
+  // Check if user already reacted with ANY emoji to this post/reply
+  let existingQuery = (supabase as any)
     .from('reactions')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('emoji', emoji)
-    .eq(replyId ? 'reply_id' : 'topic_id', replyId || topicId!)
-    .maybeSingle();
+    .select('id, emoji')
+    .eq('user_id', user.id);
 
-  if (existing) {
+  if (replyId) {
+    existingQuery = existingQuery.eq('reply_id', replyId);
+  } else if (topicId) {
+    existingQuery = existingQuery.eq('topic_id', topicId);
+  }
+
+  const { data: existing } = await existingQuery.maybeSingle();
+
+  // If user already reacted with the same emoji, don't do anything
+  if (existing && existing.emoji === emoji) {
     return { error: 'Already reacted with this emoji' };
   }
 
+  // If user reacted with a different emoji, remove the old reaction first
+  if (existing && existing.emoji !== emoji) {
+    await (supabase as any)
+      .from('reactions')
+      .delete()
+      .eq('id', existing.id);
+  }
+
+  // Add the new reaction
   const { error } = await (supabase as any).from('reactions').insert({
     user_id: user.id,
     emoji,
@@ -154,6 +169,7 @@ export async function getTopicReactions(topicId: string) {
 
 /**
  * Toggle a reaction (add if not present, remove if present)
+ * If user has a different reaction, it will be replaced with the new one
  */
 export async function toggleReaction(params: {
   emoji: ReactionEmoji;
@@ -172,12 +188,11 @@ export async function toggleReaction(params: {
     return { error: 'Must be logged in to react' };
   }
 
-  // Check if reaction exists
+  // Check if user has ANY reaction (not just the same emoji)
   let query = (supabase as any)
     .from('reactions')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('emoji', emoji);
+    .select('id, emoji')
+    .eq('user_id', user.id);
 
   if (replyId) {
     query = query.eq('reply_id', replyId);
@@ -187,11 +202,11 @@ export async function toggleReaction(params: {
 
   const { data: existing } = await query.maybeSingle();
 
-  if (existing) {
-    // Remove reaction
+  if (existing && existing.emoji === emoji) {
+    // Remove reaction if clicking same emoji (toggle off)
     return removeReaction({ emoji, replyId, topicId });
   } else {
-    // Add reaction
+    // Add reaction (will replace old one if exists due to addReaction logic)
     return addReaction({ emoji, replyId, topicId });
   }
 }
