@@ -9,6 +9,7 @@ import {
   MessageSquare,
   BarChart3,
   ArrowLeft,
+  Flag,
 } from 'lucide-react';
 
 export default async function AdminLayout({
@@ -57,6 +58,11 @@ export default async function AdminLayout({
       name: 'Odgovori',
       href: '/admin/replies',
       icon: MessageSquare,
+    },
+    {
+      name: 'Prijave',
+      href: '/admin/reports',
+      icon: Flag,
     },
     {
       name: 'Analitika',

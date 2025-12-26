@@ -11,7 +11,11 @@
       "WebFetch(domain:www.aaiedu.hr)",
       "WebSearch",
       "WebFetch(domain:django-aaieduhr.readthedocs.io)",
-      "WebFetch(domain:wiki.srce.hr)"
+      "WebFetch(domain:wiki.srce.hr)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(npx supabase:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

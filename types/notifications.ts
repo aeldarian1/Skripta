@@ -6,7 +6,8 @@ export type NotificationType =
   | 'topic_locked'
   | 'mention'
   | 'follow'
-  | 'new_message';
+  | 'new_message'
+  | 'report';
 
 export interface Notification {
   id: string;

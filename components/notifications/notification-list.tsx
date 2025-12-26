@@ -38,6 +38,8 @@ export function NotificationList({
         return <UserPlus className="w-5 h-5 text-purple-600 dark:text-purple-400" />;
       case 'new_message':
         return <Mail className="w-5 h-5 text-pink-600 dark:text-pink-400" />;
+      case 'report':
+        return <Bell className="w-5 h-5 text-red-600 dark:text-red-400" />;
       default:
         return <MessageSquare className="w-5 h-5 text-gray-500 dark:text-gray-400" />;
     }

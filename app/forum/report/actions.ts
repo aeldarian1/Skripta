@@ -1,6 +1,7 @@
 'use server';
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const ReportSchema = z.object({
@@ -49,7 +50,7 @@ export async function submitReport(formData: FormData) {
     }
 
     // Create report
-    const { error } = await (supabase as any)
+    const { data: newReport, error } = await (supabase as any)
       .from('reports')
       .insert({
         reporter_id: user.id,
@@ -57,11 +58,89 @@ export async function submitReport(formData: FormData) {
         reply_id: data.replyId || null,
         report_type: data.reportType,
         description: data.description || null,
-      });
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error('Report error:', error);
       return { success: false, error: `Greska pri slanju prijave: ${error.message}` };
+    }
+
+    // Notify all admins about the new report
+    const { data: admins } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('role', 'admin');
+
+    if (admins && admins.length > 0) {
+      // Get content info for notification message
+      let contentType = '';
+      let contentTitle = '';
+      let contentLink = '';
+
+      if (data.topicId) {
+        const { data: topic } = await (supabase as any)
+          .from('topics')
+          .select('title, slug')
+          .eq('id', data.topicId)
+          .single();
+
+        contentType = 'tema';
+        contentTitle = topic?.title || '';
+        contentLink = topic ? `/forum/topic/${topic.slug}` : '';
+      } else if (data.replyId) {
+        const { data: reply } = await (supabase as any)
+          .from('replies')
+          .select('content, topic_id, topics(slug, title)')
+          .eq('id', data.replyId)
+          .single();
+
+        contentType = 'odgovor';
+        contentTitle = reply?.topics?.title || '';
+        contentLink = reply?.topics?.slug ? `/forum/topic/${reply.topics.slug}` : '';
+      }
+
+      // Map report types to Croatian labels
+      const reportTypeLabels: Record<string, string> = {
+        'spam': 'Spam',
+        'harassment': 'Uznemiravanje',
+        'inappropriate': 'Neprikladan sadržaj',
+        'misinformation': 'Dezinformacija',
+        'other': 'Ostalo',
+      };
+
+      const reportLabel = reportTypeLabels[data.reportType] || data.reportType;
+
+      // Create notifications for all admins
+      const notifications = admins.map((admin: any) => ({
+        user_id: admin.id,
+        type: 'report',
+        title: 'Nova prijava sadržaja',
+        message: `${reportLabel} - ${contentType}${contentTitle ? ': ' + contentTitle.substring(0, 50) : ''}`,
+        link: `/admin/reports`,
+        actor_id: user.id,
+        topic_id: data.topicId || null,
+        reply_id: data.replyId || null,
+        created_at: new Date().toISOString(),
+      }));
+
+      console.log('Creating notifications for admins:', notifications);
+
+      // Use service role client to bypass RLS when creating admin notifications
+      const serviceRoleClient = createServiceRoleClient();
+      const { data: notificationData, error: notificationError } = await (serviceRoleClient as any)
+        .from('notifications')
+        .insert(notifications)
+        .select();
+
+      if (notificationError) {
+        console.error('Failed to create notifications:', notificationError);
+      } else {
+        console.log('Notifications created successfully:', notificationData);
+        // Revalidate to update notification bell
+        revalidatePath('/', 'layout');
+      }
     }
 
     return { success: true };
