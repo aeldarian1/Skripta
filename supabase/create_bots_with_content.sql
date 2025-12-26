@@ -433,24 +433,38 @@ BEGIN
 
   RAISE NOTICE 'Replies created successfully!';
 
-  -- STEP 4: Create some random votes on replies
+  -- STEP 4: Create realistic votes on replies with natural distribution
   FOR bot_user IN (SELECT id FROM profiles WHERE email LIKE 'bot%@example.com') LOOP
     -- Each bot votes on 5-15 random replies
     FOR i IN 1..(5 + floor(random() * 11)) LOOP
-      INSERT INTO votes (
-        user_id,
-        reply_id,
-        vote_type
-      )
-      SELECT
-        bot_user.id,
-        replies.id,
-        CASE WHEN random() > 0.25 THEN 1 ELSE -1 END -- 75% upvotes, 25% downvotes
-      FROM replies
-      WHERE replies.author_id != bot_user.id -- Don't vote on own replies
-      ORDER BY random()
-      LIMIT 1
-      ON CONFLICT (user_id, reply_id) DO NOTHING; -- Skip if already voted
+      DECLARE
+        vote_chance FLOAT := random();
+        vote_value INT;
+      BEGIN
+        -- Realistic voting distribution:
+        -- 85% upvotes (most helpful replies get upvoted)
+        -- 15% downvotes (unhelpful/wrong replies get downvoted)
+        IF vote_chance < 0.85 THEN
+          vote_value := 1; -- Upvote
+        ELSE
+          vote_value := -1; -- Downvote
+        END IF;
+
+        INSERT INTO votes (
+          user_id,
+          reply_id,
+          vote_type
+        )
+        SELECT
+          bot_user.id,
+          replies.id,
+          vote_value
+        FROM replies
+        WHERE replies.author_id != bot_user.id -- Don't vote on own replies
+        ORDER BY random()
+        LIMIT 1
+        ON CONFLICT (user_id, reply_id) DO NOTHING; -- Skip if already voted
+      END;
     END LOOP;
   END LOOP;
 
