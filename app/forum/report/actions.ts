@@ -125,19 +125,13 @@ export async function submitReport(formData: FormData) {
         created_at: new Date().toISOString(),
       }));
 
-      console.log('Creating notifications for admins:', notifications);
-
       // Use service role client to bypass RLS when creating admin notifications
       const serviceRoleClient = createServiceRoleClient();
-      const { data: notificationData, error: notificationError } = await (serviceRoleClient as any)
+      const { error: notificationError } = await (serviceRoleClient as any)
         .from('notifications')
-        .insert(notifications)
-        .select();
+        .insert(notifications);
 
-      if (notificationError) {
-        console.error('Failed to create notifications:', notificationError);
-      } else {
-        console.log('Notifications created successfully:', notificationData);
+      if (!notificationError) {
         // Revalidate to update notification bell
         revalidatePath('/', 'layout');
       }

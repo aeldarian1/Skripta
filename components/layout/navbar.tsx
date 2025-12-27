@@ -32,20 +32,41 @@ export async function Navbar() {
       .single();
     profile = data as Profile | null;
 
-    // Fetch notifications with actor data in a single query (eliminates N+1)
-    const { data: notificationData } = await supabase
+    console.log('Fetching notifications for user:', user.id);
+
+    // Fetch notifications first
+    const { data: notificationData, error: notificationError } = await supabase
       .from('notifications')
-      .select(`
-        *,
-        actor:profiles!actor_id(id, username, avatar_url)
-      `)
+      .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(20);
 
-    if (notificationData) {
-      notifications = notificationData as Notification[];
+    console.log('Notifications fetched:', notificationData?.length || 0, 'Error:', notificationError);
+
+    if (notificationData && notificationData.length > 0) {
+      // Get unique actor IDs
+      const actorIds = [...new Set(notificationData.map((n: any) => n.actor_id).filter(Boolean))];
+
+      // Fetch actors separately if there are any
+      let actorsMap = new Map();
+      if (actorIds.length > 0) {
+        const { data: actorsData } = await supabase
+          .from('profiles')
+          .select('id, username, avatar_url')
+          .in('id', actorIds);
+
+        actorsMap = new Map((actorsData || []).map((a: any) => [a.id, a]));
+      }
+
+      // Combine notifications with actor data
+      notifications = notificationData.map((n: any) => ({
+        ...n,
+        actor: n.actor_id ? actorsMap.get(n.actor_id) : null,
+      })) as Notification[];
+
       unreadCount = notifications.filter((n) => !n.is_read).length;
+      console.log('Unread count:', unreadCount);
     }
   }
 
