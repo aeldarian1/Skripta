@@ -446,13 +446,61 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 
 ---
 
+## V2.6.2 - Sustav Prijava i Notifikacije (26. prosinca 2025.)
+
+**Datum objave:** 26. prosinac 2025.
+
+### Dodano
+- Potpuni sustav prijava i moderacije sadržaja:
+  - Admin obavijesti za prijavljene teme i odgovore
+  - Stranica admin izvještaja (`/admin/reports`) za upravljanje prijavama
+  - Ikona "Prijave" u admin navigaciji
+  - Service role client za zaobilaženje RLS pri slanju admin obavijesti
+- Sustav notifikacija za admin kazne:
+  - Obavijesti za upozorenja korisnika sa razlogom
+  - Obavijesti za zabrane korisnika sa razlogom
+  - Obavijesti za timeout korisnika sa trajanjem i razlogom
+- Provedba timeout-a i zabrana:
+  - Provjera timeout-a prije kreiranja tema
+  - Provjera timeout-a prije kreiranja odgovora
+  - Prikaz preostalog vremena timeout-a korisnicima
+  - Blokiranje zabanjenih korisnika od stvaranja sadržaja
+- Poboljšana navigacija foruma:
+  - Breadcrumb linkovi čuvaju kontekst sveučilišta/fakulteta
+  - Pre-selekcija kategorije na gumbu "Nova tema"
+- Database migracije:
+  - `20251226000000_add_report_notification_type.sql` - Dodavanje 'report' tipa u notification_type enum
+  - `20251226000002_fix_notifications_updated_at.sql` - Uklanjanje problematičnog triggera updated_at
+
+### Promijenjeno
+- Sustav notifikacija:
+  - Odvojeno dohvaćanje notifikacija i profila aktera (izbjegnuti problemi s foreign key joinovima)
+  - Primjena istog uzorka upita u navbaru i na stranici notifikacija
+  - Dodana ikona obavijesti za tip 'report'
+- Admin akcije:
+  - Ažurirana struktura notifikacija u `warnUser()`, `banUser()`, `timeoutUser()`
+  - Korištenje `title` i `message` polja umjesto zastarjelog `content` polja
+
+### Ispravljeno
+- Notifikacije stranica prazna unatoč postojećim notifikacijama
+- Admin obavijesti blokirane RLS pravilima (koristi se service role client)
+- Foreign key join greške između `notifications` i `profiles` tablica
+- Neispravna vrijednost enum-a (`report` nije bio u `notification_type` enum-u)
+- "Označi sve kao pročitano" nije trajno označavalo notifikacije (uklonjen nepostojeći `updated_at` trigger)
+- Upozorenja/zabrane/timeout-ovi nisu slali notifikacije korisnicima
+- Korisnici u timeout-u mogli su i dalje stvarati teme i odgovore
+- Breadcrumb linkovi gubili kontekst sveučilišta/fakulteta na stranicama fakulteta
+- Gumb "Nova tema" nije odabirao kategoriju u URL-u
+
+---
+
 ## Statistika Sažetka
 
-- **Ukupno Commitova:** 250+
-- **Razdoblje Razvoja:** 5. studeni 2025. - 23. prosinac 2025. (48 dana)
+- **Ukupno Commitova:** 260+
+- **Razdoblje Razvoja:** 5. studeni 2025. - 26. prosinac 2025. (51 dana)
 - **Glavne Verzije:** 3 (V0, V1, V2)
 - **Manje Verzije:** 11
-- **Patch Verzije:** 2
+- **Patch Verzije:** 3
 - **Primarni Tech Stack:** Next.js, TypeScript, Supabase, Tailwind CSS
 - **Ključne Značajke:** Hijerarhijski forum (sveučilišta/fakulteti), gamifikacija, moderacija sadržaja, mobile-first dizajn
 
@@ -470,7 +518,8 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 | 12. pro 2025. | V2.4.0 | AI asistent (kasnije uklonjen) |
 | 13. pro 2025. | V2.5.1 | Dorada registracije |
 | 21. pro 2025. | V2.6.0 | Hijerarhijski forum |
-| 23. pro 2025. | V2.6.1 | Trenutna verzija - Bot korisnici za testiranje |
+| 23. pro 2025. | V2.6.1 | Bot korisnici za testiranje |
+| 26. pro 2025. | V2.6.2 | Trenutna verzija - Sustav prijava i notifikacije |
 
 ---
 
@@ -484,4 +533,4 @@ Ovaj projekt slijedi [Semantičko Verzioniranje](https://semver.org/):
 
 ---
 
-*Zadnje Ažurirano: 23. prosinac 2025.*
+*Zadnje Ažurirano: 26. prosinac 2025.*

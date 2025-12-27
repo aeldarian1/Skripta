@@ -87,6 +87,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tvoj-anon-key
 9. Zalijepi u SQL Editor i pokreni
 10. Kopiraj cijeli sadržaj iz `supabase/add-profile-university-faculty.sql`
 11. Zalijepi u SQL Editor i pokreni
+12. Kopiraj cijeli sadržaj iz `supabase/migrations/20251226000000_add_report_notification_type.sql`
+13. Zalijepi u SQL Editor i pokreni
+14. Kopiraj cijeli sadržaj iz `supabase/migrations/20251226000002_fix_notifications_updated_at.sql`
+15. Zalijepi u SQL Editor i pokreni
 
 Ovo će kreirati sve tablice, politike, triggere, funkcije, sveučilišta, fakultete i kategorije.
 
@@ -230,9 +234,17 @@ Nakon registracije:
 
 **✅ Production Ready** - All core features implemented and optimized
 
-### 🆕 Najnovija Ažuriranja (V2.6.1 - 23. prosinac 2025.)
+### 🆕 Najnovija Ažuriranja (V2.6.2 - 26. prosinac 2025.)
 
 **Najnovije značajke:**
+- ✨ **Sustav prijava i moderacije sadržaja** - Administratori primaju obavijesti kada korisnici prijavljuju neprikladan sadržaj
+- ✨ **Admin stranica za prijave** - Centralizirano upravljanje prijavljenim temama i odgovorima
+- ✨ **Upozorenja i kazne korisnika** - Korisnici primaju obavijesti za upozorenja, zabrane i timeout-e
+- ✨ **Provedba timeout-a** - Korisnici u timeout-u ne mogu stvarati teme ili odgovore
+- ✨ **Poboljšana navigacija** - Breadcrumb linkovi čuvaju kontekst sveučilišta/fakulteta
+- ✨ **Pre-selekcija kategorija** - Gumb "Nova tema" automatski odabire kategoriju
+
+**Prethodne značajke (V2.6.1):**
 - ✨ **Bot korisnici za testiranje** - SQL skripte za kreiranje 60 bot korisnika sa realističnim hrvatskim imenima i prezimenom
 - ✨ **Automatska generacija sadržaja** - Botovi automatski kreiraju teme (30-240), odgovore (180-600) i glasove (300-900)
 - ✨ **Prirodan ton komunikacije** - Razgovorna hrvatska gramatika sa slengom, tipfelerima i emojijima

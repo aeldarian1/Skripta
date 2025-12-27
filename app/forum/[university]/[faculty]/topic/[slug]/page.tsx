@@ -239,7 +239,7 @@ export default async function TopicPage({
         <Breadcrumb
           items={[
             { label: 'Forum', href: '/forum' },
-            { label: topic.category?.name || 'Category', href: `/forum/category/${topic.category?.slug}` },
+            { label: topic.category?.name || 'Category', href: `/forum/${universitySlug}/${facultySlug}/category/${topic.category?.slug}` },
             { label: topic.title },
           ]}
         />

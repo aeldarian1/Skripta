@@ -91,8 +91,12 @@ export async function banUser(userId: string, reason?: string) {
     .insert({
       user_id: userId,
       actor_id: adminId,
-      type: 'ban',
-      content: `Vaš račun je baniran: ${reason || 'Bez razloga'}`,
+      type: 'new_message',
+      title: 'Vaš račun je baniran',
+      message: reason || 'Bez razloga',
+      link: null,
+      topic_id: null,
+      reply_id: null,
     });
 
   if (notificationError) {
@@ -193,8 +197,12 @@ export async function warnUser(userId: string, reason: string) {
     .insert({
       user_id: userId,
       actor_id: adminId,
-      type: 'warning',
-      content: `Primili ste upozorenje: ${reason}`,
+      type: 'new_message',
+      title: 'Primili ste upozorenje',
+      message: reason,
+      link: null,
+      topic_id: null,
+      reply_id: null,
     });
 
   if (notificationError) {
@@ -265,8 +273,12 @@ export async function timeoutUser(userId: string, reason: string, durationHours:
     .insert({
       user_id: userId,
       actor_id: adminId,
-      type: 'timeout',
-      content: `Stavljen ste u timeout na ${durationHours} sati: ${reason}`,
+      type: 'new_message',
+      title: `Timeout na ${durationHours} sati`,
+      message: reason,
+      link: null,
+      topic_id: null,
+      reply_id: null,
     });
 
   if (notificationError) {

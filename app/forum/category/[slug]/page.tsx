@@ -116,7 +116,7 @@ export default async function CategoryPage({
             </div>
           </div>
         </div>
-        <Link href="/forum/new" className="w-full sm:w-auto">
+        <Link href={`/forum/new?category=${(category as any).id}`} className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto">Nova tema</Button>
         </Link>
       </div>

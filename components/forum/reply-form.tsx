@@ -173,6 +173,32 @@ export function ReplyForm({ topicId, quotedText, quotedAuthor, onSuccess, onClea
         return;
       }
 
+      // Check if user is timed out
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('timeout_until, timeout_reason, is_banned')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.is_banned) {
+        toast.error('Vaš račun je baniran i ne možete objavljivati', { id: toastId });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (profile?.timeout_until) {
+        const timeoutDate = new Date(profile.timeout_until);
+        if (timeoutDate > new Date()) {
+          const remainingMinutes = Math.ceil((timeoutDate.getTime() - Date.now()) / (1000 * 60));
+          toast.error(
+            `U timeoutu ste još ${remainingMinutes} min. Razlog: ${profile.timeout_reason || 'Nije naveden'}`,
+            { id: toastId }
+          );
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       // Spam detection - check content
       const spamCheck = detectSpam(content.trim());
       if (spamCheck.isSpam) {

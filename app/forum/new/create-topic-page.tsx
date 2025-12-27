@@ -190,6 +190,32 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
         throw new Error('Morate biti prijavljeni');
       }
 
+      // Check if user is timed out or banned
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('timeout_until, timeout_reason, is_banned')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.is_banned) {
+        toast.error('Vaš račun je baniran i ne možete objavljivati', { id: loadingToast });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (profile?.timeout_until) {
+        const timeoutDate = new Date(profile.timeout_until);
+        if (timeoutDate > new Date()) {
+          const remainingMinutes = Math.ceil((timeoutDate.getTime() - Date.now()) / (1000 * 60));
+          toast.error(
+            `U timeoutu ste još ${remainingMinutes} min. Razlog: ${profile.timeout_reason || 'Nije naveden'}`,
+            { id: loadingToast }
+          );
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       // Spam detection - check title and content
       const titleSpamCheck = detectSpam(title.trim());
       if (titleSpamCheck.isSpam) {
