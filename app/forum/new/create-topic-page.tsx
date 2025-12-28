@@ -195,7 +195,7 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
         .from('profiles')
         .select('timeout_until, timeout_reason, is_banned')
         .eq('id', user.id)
-        .single();
+        .single() as { data: { timeout_until: string | null; timeout_reason: string | null; is_banned: boolean } | null; error: any };
 
       if (profile?.is_banned) {
         toast.error('Vaš račun je baniran i ne možete objavljivati', { id: loadingToast });

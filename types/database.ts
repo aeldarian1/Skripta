@@ -41,6 +41,14 @@ export interface Database {
           university_id: string | null
           faculty_id: string | null
           study_program_id: string | null
+          warning_count: number
+          last_warning_at: string | null
+          timeout_until: string | null
+          timeout_reason: string | null
+          is_banned: boolean
+          banned_at: string | null
+          ban_reason: string | null
+          banned_by: string | null
         }
         Insert: {
           id: string
@@ -71,6 +79,14 @@ export interface Database {
           university_id?: string | null
           faculty_id?: string | null
           study_program_id?: string | null
+          warning_count?: number
+          last_warning_at?: string | null
+          timeout_until?: string | null
+          timeout_reason?: string | null
+          is_banned?: boolean
+          banned_at?: string | null
+          ban_reason?: string | null
+          banned_by?: string | null
         }
         Update: {
           id?: string
@@ -101,6 +117,14 @@ export interface Database {
           university_id?: string | null
           faculty_id?: string | null
           study_program_id?: string | null
+          warning_count?: number
+          last_warning_at?: string | null
+          timeout_until?: string | null
+          timeout_reason?: string | null
+          is_banned?: boolean
+          banned_at?: string | null
+          ban_reason?: string | null
+          banned_by?: string | null
         }
       }
       universities: {
