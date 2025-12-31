@@ -15,7 +15,8 @@
       "Bash(ls:*)",
       "Bash(grep:*)",
       "Bash(npx supabase:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(xargs cat:*)"
     ],
     "deny": [],
     "ask": []

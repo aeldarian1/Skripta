@@ -38,3 +38,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# project documentation (internal guide)
+PROJECT_INTERNAL_GUIDE.pdf
+PROJECT_INTERNAL_GUIDE.html
+PROJECT_STRUCTURE_GUIDE.pdf
+PROJECT_STRUCTURE_GUIDE.html
