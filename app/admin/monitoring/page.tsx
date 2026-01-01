@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 
+// Database monitoring dashboard showing health status, stats, materialized views, and cron jobs
+
 interface DatabaseHealth {
   status: string;
   database: {

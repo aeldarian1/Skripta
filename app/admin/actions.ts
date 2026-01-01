@@ -5,9 +5,11 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+// Verifies user is authenticated and has admin role, returns admin client with elevated privileges
 async function checkAdminAccess() {
   const supabase = await createServerSupabaseClient();
 
+  // Check if user is authenticated
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -16,6 +18,7 @@ async function checkAdminAccess() {
     redirect('/auth/login');
   }
 
+  // Verify user has admin role
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
@@ -31,6 +34,8 @@ async function checkAdminAccess() {
 }
 
 // User Management Actions
+
+// Updates a user's role (student or admin), prevents admins from removing their own admin role
 export async function updateUserRole(userId: string, newRole: 'student' | 'admin') {
   const { adminClient, userId: adminId } = await checkAdminAccess();
 
@@ -52,6 +57,7 @@ export async function updateUserRole(userId: string, newRole: 'student' | 'admin
   return { success: true };
 }
 
+// Bans a user, prevents self-banning and banning other admins, creates notification for banned user
 export async function banUser(userId: string, reason?: string) {
   const { adminClient, userId: adminId } = await checkAdminAccess();
 
@@ -107,6 +113,7 @@ export async function banUser(userId: string, reason?: string) {
   return { success: true };
 }
 
+// Removes ban from a user by clearing ban-related fields
 export async function unbanUser(userId: string) {
   const { adminClient } = await checkAdminAccess();
 
@@ -128,6 +135,7 @@ export async function unbanUser(userId: string) {
   return { success: true };
 }
 
+// Permanently deletes a user profile (cascade deletes related data)
 export async function deleteUser(userId: string) {
   const { adminClient } = await checkAdminAccess();
 
@@ -145,6 +153,7 @@ export async function deleteUser(userId: string) {
   return { success: true };
 }
 
+// Issues a warning to a user, increments warning count, creates warning record and notification
 export async function warnUser(userId: string, reason: string) {
   const { adminClient, userId: adminId } = await checkAdminAccess();
 
@@ -214,6 +223,7 @@ export async function warnUser(userId: string, reason: string) {
   return { success: true };
 }
 
+// Temporarily restricts a user from posting for specified hours, increments warning count
 export async function timeoutUser(userId: string, reason: string, durationHours: number) {
   const { adminClient, userId: adminId } = await checkAdminAccess();
 
@@ -289,6 +299,7 @@ export async function timeoutUser(userId: string, reason: string, durationHours:
   return { success: true };
 }
 
+// Removes timeout restriction from a user
 export async function removeTimeout(userId: string) {
   const { adminClient } = await checkAdminAccess();
 
@@ -309,6 +320,8 @@ export async function removeTimeout(userId: string) {
 }
 
 // Topic Management Actions
+
+// Toggles pinned status of a topic (pinned topics appear at top of forum)
 export async function pinTopic(topicId: string, pinned: boolean) {
   const { adminClient } = await checkAdminAccess();
 
@@ -326,6 +339,7 @@ export async function pinTopic(topicId: string, pinned: boolean) {
   return { success: true };
 }
 
+// Toggles locked status of a topic (locked topics cannot receive new replies)
 export async function lockTopic(topicId: string, locked: boolean) {
   const { adminClient } = await checkAdminAccess();
 
@@ -343,6 +357,7 @@ export async function lockTopic(topicId: string, locked: boolean) {
   return { success: true };
 }
 
+// Permanently deletes a topic and all associated replies
 export async function deleteTopic(topicId: string) {
   const { adminClient } = await checkAdminAccess();
 
@@ -361,6 +376,8 @@ export async function deleteTopic(topicId: string) {
 }
 
 // Reply Management Actions
+
+// Permanently deletes a specific reply from a topic
 export async function deleteReply(replyId: string) {
   const { adminClient } = await checkAdminAccess();
 
@@ -378,6 +395,8 @@ export async function deleteReply(replyId: string) {
 }
 
 // Category Management Actions
+
+// Creates a new forum category with automatic ordering
 export async function createCategory(data: {
   name: string;
   slug: string;
@@ -387,7 +406,7 @@ export async function createCategory(data: {
 }) {
   const { adminClient } = await checkAdminAccess();
 
-  // Get max order_index
+  // Get max order_index to append new category at the end
   const { data: maxOrder } = await (adminClient as any)
     .from('categories')
     .select('order_index')
@@ -409,6 +428,7 @@ export async function createCategory(data: {
   return { success: true };
 }
 
+// Updates an existing category's properties (name, slug, description, icon, color)
 export async function updateCategory(
   categoryId: string,
   data: {
@@ -435,6 +455,7 @@ export async function updateCategory(
   return { success: true };
 }
 
+// Permanently deletes a category (topics must be moved or deleted first)
 export async function deleteCategory(categoryId: string) {
   const { adminClient } = await checkAdminAccess();
 

@@ -3,6 +3,7 @@ import { TopicModerationClient } from './topic-moderation-client';
 
 export const dynamic = 'force-dynamic';
 
+// Server page that fetches topics with author/category data for moderation
 export default async function TopicsPage() {
   const supabase = await createServerSupabaseClient();
 

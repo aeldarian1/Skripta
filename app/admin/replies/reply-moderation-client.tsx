@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { deleteReply } from '../actions';
 import { Avatar } from '@/components/ui/avatar';
 
+// Client component for moderating replies with search filtering and delete functionality
+
 type Reply = {
   id: string;
   content: string;

@@ -6,6 +6,7 @@ import { Shield, AlertTriangle } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
+// Content moderation page showing stats (blocked/flagged content) and banned words management
 export default async function ModerationPage() {
   const supabase = await createServerSupabaseClient();
 

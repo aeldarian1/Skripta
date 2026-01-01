@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { pinTopic, lockTopic, deleteTopic } from '../actions';
 import { Avatar } from '@/components/ui/avatar';
 
+// Client component for moderating topics: pin, lock/unlock, delete with search and filtering
+
 type Topic = {
   id: string;
   title: string;

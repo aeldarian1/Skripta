@@ -494,13 +494,43 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 
 ---
 
+## V2.6.3 - Dokumentacija i Developer Experience (1. siječnja 2026.)
+
+**Datum objave:** 1. siječanj 2026.
+
+### Dodano
+- TypeScript konfiguracija za scripts folder (`scripts/tsconfig.json`):
+  - Dodana podrška za Node.js tipove
+  - Omogućena CommonJS modularnost za Node.js skripte
+  - Riješene greške s `process`, `fs`, i `path` tipovima
+- Dokumentacija Next.js routing arhitekture (`ROUTING_SPECS.md`):
+  - Objašnjene prednosti Next.js frameworka za projekt
+  - Detaljna dokumentacija file-based routing sustava
+  - Razlike između Server i Client komponenti
+  - Primjeri routing navigacije i implementacija
+- Inline komentari u admin TypeScript datotekama:
+  - Komentari za sve funkcije u `app/admin/actions.ts` (16 funkcija)
+  - Komentari za sve komponente u `app/admin/*.tsx` (4 datoteke)
+  - Komentari za sve podstranice u admin podfolderu (15 datoteka)
+  - Ukupno 35 datoteka dokumentirano
+
+### Promijenjeno
+- Poboljšana čitljivost koda dodavanjem objašnjavajućih komentara
+- TypeScript konfiguracija za bolju IDE podršku
+
+### Ispravljeno
+- TypeScript greške u scripts folderu uzrokovane nedostajućim Node.js tipovima
+- IDE greške za `process.env`, `fs.readFileSync`, i `path.join` u skriptama
+
+---
+
 ## Statistika Sažetka
 
-- **Ukupno Commitova:** 260+
-- **Razdoblje Razvoja:** 5. studeni 2025. - 26. prosinac 2025. (51 dana)
+- **Ukupno Commitova:** 261+
+- **Razdoblje Razvoja:** 5. studeni 2025. - 1. siječanj 2026. (57 dana)
 - **Glavne Verzije:** 3 (V0, V1, V2)
 - **Manje Verzije:** 11
-- **Patch Verzije:** 3
+- **Patch Verzije:** 4
 - **Primarni Tech Stack:** Next.js, TypeScript, Supabase, Tailwind CSS
 - **Ključne Značajke:** Hijerarhijski forum (sveučilišta/fakulteti), gamifikacija, moderacija sadržaja, mobile-first dizajn
 
@@ -519,7 +549,8 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 | 13. pro 2025. | V2.5.1 | Dorada registracije |
 | 21. pro 2025. | V2.6.0 | Hijerarhijski forum |
 | 23. pro 2025. | V2.6.1 | Bot korisnici za testiranje |
-| 26. pro 2025. | V2.6.2 | Trenutna verzija - Sustav prijava i notifikacije |
+| 26. pro 2025. | V2.6.2 | Sustav prijava i notifikacije |
+| 1. sij 2026. | V2.6.3 | Trenutna verzija - Dokumentacija i Developer Experience |
 
 ---
 
@@ -533,4 +564,4 @@ Ovaj projekt slijedi [Semantičko Verzioniranje](https://semver.org/):
 
 ---
 
-*Zadnje Ažurirano: 26. prosinac 2025.*
+*Zadnje Ažurirano: 1. siječanj 2026.*

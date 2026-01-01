@@ -5,6 +5,7 @@ import { Avatar } from '@/components/ui/avatar';
 
 export const dynamic = 'force-dynamic';
 
+// Fetches admin dashboard statistics from database
 async function getAdminStats() {
   const supabase = await createServerSupabaseClient();
 
@@ -74,9 +75,11 @@ async function getAdminStats() {
   };
 }
 
+// Main admin dashboard page displaying stats, recent topics, and top users
 export default async function AdminDashboard() {
   const stats = await getAdminStats();
 
+  // Configure stat cards with titles, values, icons, and colors
   const statCards = [
     {
       title: 'Ukupno Korisnika',

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
+// Loading skeleton for users page with search bar and user list placeholders
 export default function UsersLoading() {
   return (
     <div className="space-y-6">

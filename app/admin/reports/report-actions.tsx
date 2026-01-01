@@ -7,6 +7,8 @@ import { updateReportStatus } from '@/app/forum/report/actions';
 import { toast } from 'sonner';
 import { CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react';
 
+// Report action buttons for reviewing, resolving, or dismissing reports with optional content deletion
+
 interface ReportActionsProps {
   report: {
     id: string;

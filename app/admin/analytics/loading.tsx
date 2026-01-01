@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
+// Loading skeleton for analytics page with stat cards, charts, and activity list placeholders
 export default function AnalyticsLoading() {
   return (
     <div className="space-y-6">

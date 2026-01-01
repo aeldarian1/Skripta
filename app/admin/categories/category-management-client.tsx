@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import { createCategory, updateCategory, deleteCategory } from '../actions';
 
+// Client component for managing forum categories: create, edit, delete with form handling
+
 type Category = {
   id: string;
   name: string;

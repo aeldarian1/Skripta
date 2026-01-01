@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
+// Loading skeleton for admin dashboard with animated placeholders
 export default function AdminLoading() {
   return (
     <div className="space-y-6">
-      {/* Header skeleton */}
+      {/* Header skeleton with title and subtitle placeholders */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />
@@ -11,7 +12,7 @@ export default function AdminLoading() {
         </div>
       </div>
 
-      {/* Stats cards skeleton */}
+      {/* Stats cards skeleton - 4 animated stat card placeholders */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i}>
@@ -27,7 +28,7 @@ export default function AdminLoading() {
         ))}
       </div>
 
-      {/* Table skeleton */}
+      {/* Table skeleton - animated list of placeholder rows */}
       <Card>
         <CardHeader>
           <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 animate-pulse rounded" />

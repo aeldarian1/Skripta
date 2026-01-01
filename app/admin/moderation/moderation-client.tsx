@@ -17,6 +17,8 @@ import {
 import { toast } from 'sonner';
 import { Plus, Trash2, Edit2, Check, X, Shield } from 'lucide-react';
 
+// Client component for managing banned words/phrases with filtering options (block, censor, flag)
+
 interface ModerationClientProps {
   initialBannedWords: BannedWord[];
 }

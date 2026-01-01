@@ -3,6 +3,7 @@ import { TrendingUp, Users, MessageSquare, Eye } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
+// Fetches analytics data: category stats, activity for last 30 days, most viewed/replied topics
 async function getAnalytics() {
   const supabase = await createServerSupabaseClient();
 
@@ -87,6 +88,7 @@ async function getAnalytics() {
   };
 }
 
+// Analytics dashboard page displaying forum statistics and insights
 export default async function AnalyticsPage() {
   const analytics = await getAnalytics();
 

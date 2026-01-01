@@ -3,6 +3,7 @@ import { ReplyModerationClient } from './reply-moderation-client';
 
 export const dynamic = 'force-dynamic';
 
+// Server page that fetches replies with author/topic data for moderation
 export default async function RepliesPage() {
   const supabase = await createServerSupabaseClient();
 

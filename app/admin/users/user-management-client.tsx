@@ -8,6 +8,8 @@ import { sanitizeSearchQuery } from '@/lib/utils/sanitize';
 import { Avatar } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 
+// Client component for user management: search, role changes, ban/unban, warnings, timeouts, deletion
+
 type User = {
   id: string;
   email: string;

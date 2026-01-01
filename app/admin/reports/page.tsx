@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { ReportActions } from './report-actions';
 import { Flag, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
 
+// Reports management page with status filtering (pending/reviewed/resolved/dismissed)
+
 const REPORT_TYPE_LABELS: Record<string, string> = {
   spam: 'Spam',
   harassment: 'Uznemiravanje',

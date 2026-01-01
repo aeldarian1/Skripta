@@ -3,6 +3,7 @@ import { CategoryManagementClient } from './category-management-client';
 
 export const dynamic = 'force-dynamic';
 
+// Server page that fetches categories and renders category management interface
 export default async function CategoriesPage() {
   const supabase = await createServerSupabaseClient();
 

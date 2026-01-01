@@ -3,6 +3,7 @@ import { UserManagementClient } from './user-management-client';
 
 export const dynamic = 'force-dynamic';
 
+// Server page that fetches all user profiles with moderation data for user management
 export default async function UsersPage() {
   const supabase = await createServerSupabaseClient();
 

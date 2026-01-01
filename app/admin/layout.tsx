@@ -12,6 +12,7 @@ import {
   Flag,
 } from 'lucide-react';
 
+// Admin panel layout with sidebar navigation and access control
 export default async function AdminLayout({
   children,
 }: {
@@ -19,6 +20,7 @@ export default async function AdminLayout({
 }) {
   const supabase = await createServerSupabaseClient();
 
+  // Verify user is authenticated
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -27,7 +29,7 @@ export default async function AdminLayout({
     redirect('/auth/login');
   }
 
-  // Check if user is admin
+  // Check if user has admin role
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
@@ -38,6 +40,7 @@ export default async function AdminLayout({
     redirect('/forum');
   }
 
+  // Navigation menu items for admin panel
   const navItems = [
     {
       name: 'Nadzorna Ploča',
