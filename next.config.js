@@ -10,7 +10,6 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    qualities: [75, 85],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
   // Performance optimizations
@@ -28,7 +27,24 @@ const nextConfig = {
 
   // Fix for GitHub Codespaces and server actions
   experimental: {
-    optimizePackageImports: ['lucide-react', '@supabase/supabase-js'],
+    // Optimize imports for commonly used packages to reduce bundle size
+    optimizePackageImports: [
+      'lucide-react',
+      '@supabase/supabase-js',
+      '@supabase/ssr',
+      'react-markdown',
+      'react-syntax-highlighter',
+      'sonner',
+      'class-variance-authority',
+      'clsx',
+      'tailwind-merge',
+      'zod',
+      'react-hook-form',
+      '@hookform/resolvers',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-progress',
+    ],
     serverActions: {
       allowedOrigins: [
         'localhost:3000',
@@ -37,6 +53,35 @@ const nextConfig = {
       ],
       bodySizeLimit: '15mb', // Increase limit for image uploads (default is 1mb)
     },
+  },
+
+  // Security headers for better performance and security
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+        ],
+      },
+      {
+        // Cache static assets aggressively
+        source: '/(.*)\\.(ico|png|svg|jpg|jpeg|gif|webp|avif|woff|woff2)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
 
   // Fix for Turbopack workspace root detection

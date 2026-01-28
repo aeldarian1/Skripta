@@ -24,25 +24,27 @@ export async function Navbar() {
   let notifications: Notification[] = [];
   let unreadCount = 0;
 
+  // Run queries in parallel for better performance
+  const [profileResult, universitiesResult] = await Promise.all([
+    user
+      ? supabase.from('profiles').select('*').eq('id', user.id).single()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from('universities')
+      .select('id, name, slug, faculties(id, name, abbreviation, slug)')
+      .order('name', { ascending: true }),
+  ]);
+
+  profile = profileResult.data as Profile | null;
+
   if (user) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-    profile = data as Profile | null;
-
-    console.log('Fetching notifications for user:', user.id);
-
-    // Fetch notifications first
-    const { data: notificationData, error: notificationError } = await supabase
+    // Fetch notifications with optimized query
+    const { data: notificationData } = await supabase
       .from('notifications')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(20);
-
-    console.log('Notifications fetched:', notificationData?.length || 0, 'Error:', notificationError);
 
     if (notificationData && notificationData.length > 0) {
       // Get unique actor IDs
@@ -66,22 +68,10 @@ export async function Navbar() {
       })) as Notification[];
 
       unreadCount = notifications.filter((n) => !n.is_read).length;
-      console.log('Unread count:', unreadCount);
     }
   }
 
-  // Fetch universities with their faculties for the forum dropdown
-  const { data: universitiesData } = await supabase
-    .from('universities')
-    .select(`
-      id,
-      name,
-      slug,
-      faculties(id, name, abbreviation, slug)
-    `)
-    .order('name', { ascending: true });
-
-  const universities = (universitiesData || []).map((uni: any) => ({
+  const universities = (universitiesResult.data || []).map((uni: any) => ({
     ...uni,
     faculties: (uni.faculties || []).sort((a: Faculty, b: Faculty) =>
       (a.abbreviation || a.name).localeCompare(b.abbreviation || b.name)

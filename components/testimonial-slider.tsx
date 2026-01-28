@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -80,57 +80,87 @@ const testimonials: Testimonial[] = [
   },
 ];
 
+// Memoized testimonial card to prevent unnecessary re-renders
+const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div
+      className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 will-change-transform"
+    >
+      <div className="flex items-center mb-4">
+        <div
+          className={`w-12 h-12 bg-gradient-to-br ${testimonial.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}
+        >
+          {testimonial.initial}
+        </div>
+        <div className="ml-3">
+          <div className="font-bold text-gray-900 dark:text-white">{testimonial.name}</div>
+          <div className="text-sm text-gray-500">{testimonial.university}</div>
+        </div>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 italic min-h-[80px]">
+        {testimonial.text}
+      </p>
+      <div className="mt-4 text-yellow-500" aria-label={`${testimonial.rating} od 5 zvjezdica`}>
+        {'⭐'.repeat(testimonial.rating)}
+      </div>
+    </div>
+  );
+});
+
 export function TestimonialSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Responsive items per view
+  // Responsive items per view with debounced resize
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerView(1);
-      } else if (window.innerWidth < 1024) {
-        setItemsPerView(2);
-      } else {
-        setItemsPerView(3);
-      }
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (window.innerWidth < 768) {
+          setItemsPerView(1);
+        } else if (window.innerWidth < 1024) {
+          setItemsPerView(2);
+        } else {
+          setItemsPerView(3);
+        }
+      }, 100);
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const maxIndex = Math.max(0, testimonials.length - itemsPerView);
+
+  // Memoized navigation functions
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
+  }, [maxIndex]);
+
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : maxIndex));
+    setIsAutoPlaying(false);
+  }, [maxIndex]);
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentIndex(index);
+    setIsAutoPlaying(false);
   }, []);
 
   // Auto-play functionality
   useEffect(() => {
     if (!isAutoPlaying) return;
 
-    const interval = setInterval(() => {
-      goToNext();
-    }, 5000);
-
+    const interval = setInterval(goToNext, 5000);
     return () => clearInterval(interval);
-  }, [currentIndex, itemsPerView, isAutoPlaying]);
-
-  const maxIndex = Math.max(0, testimonials.length - itemsPerView);
-
-  // Navigates to the previous slide or wraps to the last slide
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : maxIndex));
-    setIsAutoPlaying(false);
-  };
-
-  // Navigates to the next slide or wraps to the first slide
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
-  };
-
-  // Navigates directly to a specific slide and pauses auto-play
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    setIsAutoPlaying(false);
-  };
+  }, [isAutoPlaying, goToNext]);
 
   const visibleTestimonials = testimonials.slice(currentIndex, currentIndex + itemsPerView);
 
@@ -139,28 +169,7 @@ export function TestimonialSlider() {
       {/* Testimonials Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {visibleTestimonials.map((testimonial) => (
-          <div
-            key={testimonial.id}
-            className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-2 border-gray-100 dark:border-gray-700 transition-all hover:shadow-2xl hover:-translate-y-1"
-          >
-            <div className="flex items-center mb-4">
-              <div
-                className={`w-12 h-12 bg-gradient-to-br ${testimonial.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}
-              >
-                {testimonial.initial}
-              </div>
-              <div className="ml-3">
-                <div className="font-bold text-gray-900 dark:text-white">{testimonial.name}</div>
-                <div className="text-sm text-gray-500">{testimonial.university}</div>
-              </div>
-            </div>
-            <p className="text-gray-600 dark:text-gray-400 italic min-h-[80px]">
-              {testimonial.text}
-            </p>
-            <div className="mt-4 text-yellow-500">
-              {'⭐'.repeat(testimonial.rating)}
-            </div>
-          </div>
+          <TestimonialCard key={testimonial.id} testimonial={testimonial} />
         ))}
       </div>
 
