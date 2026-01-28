@@ -8,6 +8,34 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 
 ---
 
+## V2.7.0 - Ažuriranje Dependencija i TailwindCSS v4 (28. siječnja 2026.)
+
+**Datum objave:** 28. siječanj 2026.
+
+### Dodano
+- **ES Modules** - Projekt koristi native JavaScript module sustav (`"type": "module"`)
+- **Turbopack** - Brži development build s Next.js Turbopack bundlerom
+- **Optimizirani importi** - Tree-shaking za 15+ paketa (lucide-react, supabase, radix-ui, itd.)
+- **Paralelni upiti** - Brže učitavanje stranica s Promise.all()
+
+### Promijenjeno
+- **Next.js 16.1.6** - Ažurirano s 16.0.7
+- **React 19.2.4** - Ažurirano s 19.2.1
+- **TailwindCSS 4.1.18** - Migracija s v3.4.18 na v4
+  - Nova CSS-first konfiguracija (`@import "tailwindcss"`)
+  - PostCSS plugin premješten u `@tailwindcss/postcss`
+  - Uklonjeni deprecated autoprefixer (ugrađen u v4)
+  - Ažurirane klase na kanonske nazive (bg-gradient-to-r → bg-linear-to-r, break-words → wrap-break-word, flex-shrink-0 → shrink-0, itd.)
+- **@supabase/supabase-js 2.93.2** - Ažurirano s 2.45.0
+- **next.config.js → next.config.mjs** - Konvertiran u ES module format
+
+### Ispravljeno
+- TypeScript greške s manjkajućim React importima u UI komponentama
+- ES module kompatibilnost (__dirname polyfill za ES modules)
+- TailwindCSS v4 deprecation upozorenja za klase
+
+---
+
 ## V0.1.0 - Specifikacija Projekta (5. studenog 2025.)
 
 **Datum objave:** 5. studeni 2025.

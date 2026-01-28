@@ -1,7 +1,7 @@
 # Technical Specifications - Skripta (Studentski Forum)
 
-**Version:** 2.6.2
-**Last Updated:** December 31, 2025
+**Version:** 2.7.0
+**Last Updated:** January 28, 2026
 **Authors:** Jan Pavić, Damjan Josip Sartori, Marino Listeš
 
 ---
@@ -27,9 +27,10 @@
 ## Tech Stack
 
 ### Core Framework
-- **Next.js 16.1.1** - React framework with App Router
-- **React 19.2.3** - UI library
+- **Next.js 16.1.6** - React framework with App Router & Turbopack
+- **React 19.2.4** - UI library
 - **TypeScript 5.x** - Type safety and better DX
+- **ES Modules** - Native JavaScript module system (`"type": "module"`)
 
 ### Backend & Database
 - **Supabase** - Backend as a Service (BaaS)
@@ -39,10 +40,11 @@
   - Authentication
   - Storage for user uploads
 - **@supabase/ssr 0.8.0** - Server-side rendering support
-- **@supabase/supabase-js 2.45.0** - JavaScript client
+- **@supabase/supabase-js 2.93.2** - JavaScript client
 
 ### Styling & UI
-- **Tailwind CSS 3.4.18** - Utility-first CSS framework
+- **Tailwind CSS 4.1.18** - Utility-first CSS framework (CSS-first configuration)
+- **@tailwindcss/postcss** - PostCSS plugin for Tailwind v4
 - **shadcn/ui** - Accessible component library (Radix UI primitives)
   - @radix-ui/react-progress 1.1.8
   - @radix-ui/react-select 2.2.6
@@ -50,7 +52,7 @@
 - **class-variance-authority 0.7.0** - Component variants
 - **tailwindcss-animate 1.0.7** - Animation utilities
 - **next-themes 0.4.6** - Dark mode support
-- **lucide-react 0.555.0** - Icon library
+- **lucide-react 0.511.0** - Icon library
 
 ### Content & Forms
 - **react-markdown 10.1.0** - Markdown rendering
@@ -77,8 +79,8 @@
 ### Development Tools
 - **ESLint 9.39.1** - Code linting
 - **Puppeteer 24.34.0** - PDF generation & browser automation
-- **Autoprefixer 10.0.1** - CSS vendor prefixes
 - **PostCSS 8** - CSS transformations
+- **Turbopack** - Fast development bundler (built into Next.js 16)
 
 ---
 
@@ -604,7 +606,19 @@ images: {
 experimental: {
   optimizePackageImports: [
     'lucide-react',
-    '@supabase/supabase-js'
+    '@supabase/supabase-js',
+    '@supabase/ssr',
+    '@radix-ui/react-dialog',
+    '@radix-ui/react-dropdown-menu',
+    '@radix-ui/react-select',
+    '@radix-ui/react-tabs',
+    '@radix-ui/react-tooltip',
+    '@radix-ui/react-avatar',
+    '@radix-ui/react-progress',
+    '@radix-ui/react-label',
+    'react-syntax-highlighter',
+    'date-fns',
+    'zod',
   ],
 }
 ```
@@ -819,13 +833,28 @@ CRON_SECRET=your-cron-secret
 ### PostCSS (`postcss.config.mjs`)
 
 ```javascript
+// TailwindCSS v4 uses @tailwindcss/postcss
 {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    '@tailwindcss/postcss': {},
   }
 }
 ```
+
+### TailwindCSS v4 Configuration
+
+Tailwind v4 uses CSS-first configuration in `globals.css`:
+
+```css
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+```
+
+The `tailwind.config.ts` extends the base configuration with:
+- Custom color palette using CSS variables
+- Custom animations (float, pulse-glow, shake, slide-up/down)
+- Extended breakpoints (xs: 475px)
+- Dark mode via class strategy
 
 ---
 
@@ -907,4 +936,4 @@ npm run lint
 
 ---
 
-**Last Updated:** December 31, 2025
+**Last Updated:** January 28, 2026
