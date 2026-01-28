@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm --version:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:www.aaiedu.hr)",
+      "WebSearch",
+      "WebFetch(domain:django-aaieduhr.readthedocs.io)",
+      "WebFetch(domain:wiki.srce.hr)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(npx supabase:*)",
+      "Bash(cat:*)",
+      "Bash(xargs cat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
