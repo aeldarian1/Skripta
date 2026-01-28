@@ -26,8 +26,8 @@ Online forum za studente svih sveučilišta u Hrvatskoj. Korisnici mogu stvarati
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Next.js 16.0.7 (App Router), TypeScript, React 19.2.1
-- **Styling:** Tailwind CSS 3.4.18, shadcn/ui komponente
+- **Frontend:** Next.js 16.1.6 (App Router), TypeScript, React 19.2.4
+- **Styling:** Tailwind CSS 4.1.18, shadcn/ui komponente
 - **Markdown:** react-markdown, remark-gfm, rehype-sanitize, react-syntax-highlighter
 - **Validation:** Zod 4.1.13
 - **Backend:** Supabase (PostgreSQL) sa Row-Level Security
@@ -234,7 +234,18 @@ Nakon registracije:
 
 **✅ Production Ready** - All core features implemented and optimized
 
-### 🆕 Najnovija Ažuriranja (V2.6.2 - 26. prosinac 2025.)
+### 🆕 Najnovija Ažuriranja (V2.7.0 - 28. siječanj 2026.)
+
+**Najnovije značajke:**
+- ⬆️ **Next.js 16.1.6** - Ažurirano na najnoviju verziju
+- ⬆️ **React 19.2.4** - Najnovija stabilna verzija
+- ⬆️ **TailwindCSS 4.1.18** - Migracija na v4 s novom CSS-first konfiguracijom
+- ⚡ **ES Modules** - Projekt koristi ES module sustav
+- ⚡ **Turbopack** - Brži development build s Turbopack-om
+- ⚡ **Optimizirani importi** - Tree-shaking za 15+ paketa
+- ⚡ **Paralelni upiti** - Brže učitavanje stranica
+
+### Prethodna Ažuriranja (V2.6.2 - 26. prosinac 2025.)
 
 **Najnovije značajke:**
 - ✨ **Sustav prijava i moderacije sadržaja** - Administratori primaju obavijesti kada korisnici prijavljuju neprikladan sadržaj

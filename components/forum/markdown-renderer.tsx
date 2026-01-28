@@ -20,7 +20,7 @@ const SyntaxHighlighter = lazy(() =>
 
 export const MarkdownRenderer = memo(function MarkdownRenderer({ content, className = '' }: MarkdownRendererProps) {
   return (
-    <div className={`prose dark:prose-invert max-w-none break-words ${className}`}>
+    <div className={`prose dark:prose-invert max-w-none wrap-break-word ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw, rehypeSanitize]}

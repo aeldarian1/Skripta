@@ -86,10 +86,10 @@ export async function Navbar() {
           <div className="flex items-center gap-4 sm:gap-8">
             <Link href="/forum" className="flex items-center gap-2 font-bold text-lg sm:text-xl hover:opacity-80 transition-opacity">
               <SkriptaLogo size={28} className="sm:w-8 sm:h-8" />
-              <span className="hidden xs:inline bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="hidden xs:inline bg-linear-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
                 Skripta
               </span>
-              <span className="xs:hidden bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="xs:hidden bg-linear-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
                 Skripta
               </span>
             </Link>

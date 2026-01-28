@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Import the tailwind config */
+@config "../tailwind.config.ts";
 
 @layer base {
   :root {
@@ -74,7 +75,7 @@
 @layer utilities {
   /* Gradient text */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--gradient-from))] to-[hsl(var(--gradient-to))];
+    @apply bg-clip-text text-transparent bg-linear-to-r from-[hsl(var(--gradient-from))] to-[hsl(var(--gradient-to))];
   }
 
   /* Glassmorphism effect */
@@ -98,7 +99,7 @@
 
   /* Gradient borders */
   .gradient-border {
-    @apply relative bg-gradient-to-br from-red-500 via-purple-500 to-blue-500 p-[2px] rounded-2xl;
+    @apply relative bg-linear-to-br from-red-500 via-purple-500 to-blue-500 p-0.5 rounded-2xl;
   }
 
   .gradient-border-content {

@@ -88,7 +88,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimo
     >
       <div className="flex items-center mb-4">
         <div
-          className={`w-12 h-12 bg-gradient-to-br ${testimonial.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}
+          className={`w-12 h-12 bg-linear-to-br ${testimonial.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}
         >
           {testimonial.initial}
         </div>
@@ -97,7 +97,7 @@ const TestimonialCard = memo(function TestimonialCard({ testimonial }: { testimo
           <div className="text-sm text-gray-500">{testimonial.university}</div>
         </div>
       </div>
-      <p className="text-gray-600 dark:text-gray-400 italic min-h-[80px]">
+      <p className="text-gray-600 dark:text-gray-400 italic min-h-20">
         {testimonial.text}
       </p>
       <div className="mt-4 text-yellow-500" aria-label={`${testimonial.rating} od 5 zvjezdica`}>

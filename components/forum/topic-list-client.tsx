@@ -49,7 +49,7 @@ const TopicCard = memo(function TopicCard({ topic }: { topic: Topic }) {
       className="p-5 sm:p-7 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 will-change-transform"
     >
       <div className="flex items-start gap-4 sm:gap-5">
-        <Link href={`/forum/user/${topic.author?.username}`} className="flex-shrink-0">
+        <Link href={`/forum/user/${topic.author?.username}`} className="shrink-0">
           <Avatar
             src={topic.author?.avatar_url}
             alt={topic.author?.username || 'User'}
@@ -89,7 +89,7 @@ const TopicCard = memo(function TopicCard({ topic }: { topic: Topic }) {
             href={`/forum/topic/${topic.slug}`}
             className="block mb-3 group"
           >
-            <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors break-words leading-tight">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors wrap-break-word leading-tight">
               {topic.title}
             </h3>
           </Link>
