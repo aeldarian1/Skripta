@@ -177,6 +177,7 @@ export async function Navbar() {
 
           {/* Mobile Actions */}
           <div className="flex md:hidden items-center gap-2">
+            {user && profile && profile.role === 'admin' && <PWAInstallButton />}
             <ThemeToggle />
             {user && profile && (
               <NotificationBell
