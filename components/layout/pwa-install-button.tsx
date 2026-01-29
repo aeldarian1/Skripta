@@ -148,7 +148,7 @@ export function PWAInstallButton() {
     } else if (isAndroid) {
       if (isFirefox) {
         toast.info('Instalacija u Firefoxu', {
-          description: '1. Dodirnite ikonu izbornika (⋮) u gornjem desnom kutu\n2. Odaberite "Instaliraj"',
+          description: 'Na Firefox pregledniku aplikaciju dodajte putem izbornika (⋮) → "Add app to homescreen"',
           duration: 10000,
         });
       } else if (isBrave) {
