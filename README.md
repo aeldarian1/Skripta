@@ -23,6 +23,7 @@ Online forum za studente svih sveučilišta u Hrvatskoj. Korisnici mogu stvarati
 - ✅ **Dark mode podrška** - Svijetla i tamna tema
 - ✅ **Loading states** - Skeleton screens za bolji UX
 - ✅ **Performance optimizacije** - ISR caching, image optimization
+- 🧪 **PWA podrška (BETA)** - Progressive Web App s instalacijom (samo za administratore)
 
 ## 🛠 Tech Stack
 
@@ -32,6 +33,7 @@ Online forum za studente svih sveučilišta u Hrvatskoj. Korisnici mogu stvarati
 - **Validation:** Zod 4.1.13
 - **Backend:** Supabase (PostgreSQL) sa Row-Level Security
 - **Authentication:** Supabase Auth sa SSR (@supabase/ssr)
+- **PWA:** next-pwa sa Workbox caching strategijama (BETA)
 - **Deployment:** Vercel (preporučeno)
 
 ### 🎯 Performance Features

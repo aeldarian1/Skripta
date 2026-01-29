@@ -8,6 +8,37 @@ Ovaj dokument prati kronološke promjene kroz projekt **Skripta** (Studentski Fo
 
 ---
 
+## V2.8.0 - PWA Podrška (BETA) (29. siječnja 2026.)
+
+**Datum objave:** 29. siječanj 2026.
+
+### Dodano
+- **PWA Podrška (BETA)** - Progressive Web App funkcionalnost
+  - Instalacija aplikacije na uređaje (desktop i mobile)
+  - Service worker sa Workbox caching strategijama
+  - Offline pristup cachiranim resursima
+  - App manifest sa ikonama i shortcutima
+  - Instalacijski gumb u navigaciji (vidljiv samo administratorima)
+- **next-pwa** - Automatska generacija service workera
+- **Caching strategije:**
+  - NetworkFirst za Supabase API pozive (cache: 24h)
+  - CacheFirst za slike (cache: 30 dana)
+  - CacheFirst za Google Fonts (cache: 1 godina)
+- **Platform-specific upute** - Toast obavijesti sa uputama za instalaciju na iOS/Android
+- **PWA ikone** - 192x192 i 512x512 ikone sa Croatian pleter dizajnom
+
+### Promijenjeno
+- Manifest.json ažuriran sa ispravnim putanjama do ikona
+- Layout.tsx uključuje manifest link
+
+### Napomene
+- ⚠️ **BETA ZNAČAJKA** - PWA funkcionalnost je trenutno u beta fazi testiranja
+- Instalacijski gumb vidljiv samo korisnicima s admin ulogom
+- Service worker se ne generira u development modu
+- Potreban HTTPS za produkcijsku upotrebu PWA funkcionalnosti
+
+---
+
 ## V2.7.0 - Ažuriranje Dependencija i TailwindCSS v4 (28. siječnja 2026.)
 
 **Datum objave:** 28. siječanj 2026.
