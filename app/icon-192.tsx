@@ -1,0 +1,62 @@
+import { ImageResponse } from 'next/og';
+
+// Image metadata
+export const size = {
+  width: 192,
+  height: 192,
+};
+
+export const contentType = 'image/png';
+
+// Icon component
+export default function Icon192() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'transparent',
+        }}
+      >
+        <svg
+          width="192"
+          height="192"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Background Circle with Croatian Red */}
+          <circle cx="50" cy="50" r="48" fill="#E03131" />
+
+          {/* White Circle for contrast */}
+          <circle cx="50" cy="50" r="42" fill="white" />
+
+          {/* Stylized "S" with Croatian pleter-inspired curves */}
+          <path
+            d="M 35 30 Q 28 30 28 37 Q 28 42 33 44 L 55 52 Q 62 54 62 60 Q 62 66 55 66 L 40 66 Q 35 66 35 61"
+            stroke="#E03131"
+            strokeWidth="8"
+            strokeLinecap="round"
+            fill="none"
+          />
+
+          {/* Top decorative pleter knot */}
+          <circle cx="35" cy="30" r="4" fill="#0066CC" />
+
+          {/* Bottom decorative pleter knot */}
+          <circle cx="40" cy="66" r="4" fill="#0066CC" />
+
+          {/* Middle decorative pleter knot */}
+          <circle cx="55" cy="52" r="3" fill="#0066CC" />
+        </svg>
+      </div>
+    ),
+    {
+      ...size,
+    }
+  );
+}

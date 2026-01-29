@@ -30,6 +30,7 @@ export const metadata: Metadata = {
   keywords: ["skripta", "forum", "studenti", "hrvatska", "sveučilište", "obrazovanje", "kolega", "faks", "predavanja", "ispiti"],
   authors: [{ name: "Skripta Tim" }],
   applicationName: "Skripta",
+  manifest: "/manifest.json",
   openGraph: {
     title: "Skripta - Hrvatski Studentski Forum",
     description: "Tvoja digitalna skripta - forum za studente svih sveučilišta u Hrvatskoj",

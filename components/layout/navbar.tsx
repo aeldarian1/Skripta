@@ -9,6 +9,7 @@ import { NavbarBookmarkButton } from './navbar-bookmark-button';
 import { MobileNav } from './mobile-nav';
 import { NavLink } from './nav-link';
 import { ForumDropdown } from './forum-dropdown';
+import { PWAInstallButton } from './pwa-install-button';
 import { logout } from '@/app/auth/actions';
 import { MessageSquare, User, LogOut, Search, Settings, Bookmark, Mail } from 'lucide-react';
 import type { Notification } from '@/types/notifications';
@@ -139,6 +140,7 @@ export async function Navbar() {
                   initialNotifications={notifications}
                   initialUnreadCount={unreadCount}
                 />
+                {profile?.role === 'admin' && <PWAInstallButton />}
                 <ThemeToggle />
                 <Link
                   href={`/forum/user/${profile.username}`}

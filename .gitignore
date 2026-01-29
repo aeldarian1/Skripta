@@ -39,6 +39,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
 # project documentation (internal guide)
 PROJECT_INTERNAL_GUIDE.pdf
 PROJECT_INTERNAL_GUIDE.html
