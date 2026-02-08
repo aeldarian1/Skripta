@@ -217,7 +217,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
       {/* Search Bar */}
-      <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-3 sm:p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
           <input
@@ -230,8 +230,8 @@ export function UserManagementClient({ users }: { users: User[] }) {
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="overflow-x-auto">
+      {/* Users Table - Desktop View */}
+      <div className="overflow-x-auto hidden sm:block">
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-gray-900">
             <tr>
@@ -244,7 +244,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
               <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">
+              <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">
                 Reputacija
               </th>
               <th className="px-3 sm:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -289,12 +289,12 @@ export function UserManagementClient({ users }: { users: User[] }) {
                     </Link>
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
-                    <div className="text-xs sm:text-sm text-gray-900 dark:text-white">
+                    <div className="text-xs sm:text-sm text-gray-900 dark:text-white break-all">
                       {user.email}
                     </div>
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <span
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium w-fit ${
                           user.role === 'admin'
@@ -325,13 +325,13 @@ export function UserManagementClient({ users }: { users: User[] }) {
                       )}
                     </div>
                   </td>
-                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
                     <div className="text-xs sm:text-sm text-gray-900 dark:text-white">
                       {user.reputation}
                     </div>
                   </td>
                   <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-1 sm:gap-2 flex-wrap">
+                    <div className="flex items-center justify-end gap-2 flex-wrap">
                       {/* Role change button */}
                       <button
                         onClick={() =>
@@ -345,7 +345,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                         title={user.role === 'admin' ? 'Ukloni admin ulogu' : 'Postavi administratorom'}
                       >
                         <Shield className="h-3 w-3" />
-                        <span className="hidden lg:inline">
+                        <span className="hidden md:inline">
                           {user.role === 'admin' ? 'Ukloni Admin' : 'Postavi Admin'}
                         </span>
                       </button>
@@ -361,7 +361,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                             title="Upozori korisnika"
                           >
                             <AlertTriangle className="h-3 w-3" />
-                            <span className="hidden lg:inline">Upozori</span>
+                            <span className="hidden md:inline">Upozori</span>
                           </button>
 
                           {/* Timeout button */}
@@ -373,7 +373,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                               title="Ukloni timeout"
                             >
                               <X className="h-3 w-3" />
-                              <span className="hidden lg:inline">Ukloni Timeout</span>
+                              <span className="hidden md:inline">Ukloni Timeout</span>
                             </button>
                           ) : (
                             <button
@@ -383,7 +383,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                               title="Stavi korisnika u timeout"
                             >
                               <Clock className="h-3 w-3" />
-                              <span className="hidden lg:inline">Timeout</span>
+                              <span className="hidden md:inline">Timeout</span>
                             </button>
                           )}
 
@@ -395,7 +395,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                             title="Banaj korisnika"
                           >
                             <Ban className="h-3 w-3" />
-                            <span className="hidden lg:inline">Banaj</span>
+                            <span className="hidden md:inline">Banaj</span>
                           </button>
                         </>
                       )}
@@ -409,7 +409,7 @@ export function UserManagementClient({ users }: { users: User[] }) {
                           title="Ukloni ban"
                         >
                           <UserCheck className="h-3 w-3" />
-                          <span className="hidden lg:inline">Ukloni Ban</span>
+                          <span className="hidden md:inline">Ukloni Ban</span>
                         </button>
                       )}
 
@@ -421,13 +421,13 @@ export function UserManagementClient({ users }: { users: User[] }) {
                         title="Trajno obrisi korisnika"
                       >
                         <UserX className="h-3 w-3" />
-                        <span className="hidden lg:inline">Obrisi</span>
+                        <span className="hidden md:inline">Obrisi</span>
                       </button>
                     </div>
 
                     {/* Ban reason info */}
                     {user.is_banned && user.ban_reason && (
-                      <div className="mt-1 text-xs text-red-600 dark:text-red-400 text-left">
+                      <div className="mt-2 text-xs text-red-600 dark:text-red-400 text-left">
                         Razlog: {user.ban_reason}
                       </div>
                     )}
@@ -439,10 +439,205 @@ export function UserManagementClient({ users }: { users: User[] }) {
         </table>
       </div>
 
+      {/* Mobile Card View */}
+      <div className="block sm:hidden">
+        {filteredUsers.length === 0 ? (
+          <div className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+            Nema pronadenih korisnika
+          </div>
+        ) : (
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {filteredUsers.map((user) => (
+              <div
+                key={user.id}
+                className={`p-4 space-y-3 ${
+                  user.is_banned ? 'bg-red-50 dark:bg-red-900/20' : ''
+                }`}
+              >
+                {/* User Header */}
+                <Link href={`/forum/user/${user.username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <Avatar
+                    src={user.avatar_url}
+                    alt={user.username}
+                    username={user.username}
+                    size="md"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate">
+                      {user.full_name || user.username}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      @{user.username}
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Email and Reputation */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <div className="text-gray-500 dark:text-gray-400 font-medium mb-0.5">Email</div>
+                    <div className="text-gray-900 dark:text-white break-all line-clamp-2">
+                      {user.email}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 dark:text-gray-400 font-medium mb-0.5">Reputacija</div>
+                    <div className="text-gray-900 dark:text-white font-medium">
+                      {user.reputation}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Status Badges */}
+                <div className="flex flex-wrap gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                      user.role === 'admin'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                    }`}
+                  >
+                    {user.role === 'admin' && <Shield className="h-3 w-3" />}
+                    {user.role === 'admin' ? 'Admin' : 'Student'}
+                  </span>
+                  {user.is_banned && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                      <Ban className="h-3 w-3" />
+                      Baniran
+                    </span>
+                  )}
+                  {isInTimeout(user) && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                      <Clock className="h-3 w-3" />
+                      Timeout
+                    </span>
+                  )}
+                  {(user.warning_count || 0) > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                      <AlertTriangle className="h-3 w-3" />
+                      {user.warning_count}x
+                    </span>
+                  )}
+                </div>
+
+                {/* Timeout Info */}
+                {isInTimeout(user) && (
+                  <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded">
+                    Timeout završava za {formatTimeoutRemaining(user.timeout_until!)}
+                  </div>
+                )}
+
+                {/* Ban Reason */}
+                {user.is_banned && user.ban_reason && (
+                  <div className="text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded">
+                    Razlog: {user.ban_reason}
+                  </div>
+                )}
+
+                {/* Mobile Action Buttons - Vertical Stack */}
+                <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Role change button */}
+                    <button
+                      onClick={() =>
+                        handleRoleChange(
+                          user.id,
+                          user.role === 'admin' ? 'student' : 'admin'
+                        )
+                      }
+                      disabled={loading === user.id}
+                      className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      title={user.role === 'admin' ? 'Ukloni admin ulogu' : 'Postavi administratorom'}
+                    >
+                      <Shield className="h-4 w-4" />
+                      <span>Admin</span>
+                    </button>
+
+                    {/* Delete button */}
+                    <button
+                      onClick={() => handleDeleteUser(user.id, user.username)}
+                      disabled={loading === user.id}
+                      className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      title="Trajno obrisi korisnika"
+                    >
+                      <UserX className="h-4 w-4" />
+                      <span>Obrisi</span>
+                    </button>
+                  </div>
+
+                  {/* Warning/Timeout/Ban buttons */}
+                  {user.role !== 'admin' && !user.is_banned && (
+                    <div className="grid grid-cols-3 gap-2">
+                      {/* Warn button */}
+                      <button
+                        onClick={() => setShowWarnDialog(user.id)}
+                        disabled={loading === user.id}
+                        className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Upozori korisnika"
+                      >
+                        <AlertTriangle className="h-4 w-4" />
+                        <span>Upozori</span>
+                      </button>
+
+                      {/* Timeout button */}
+                      {isInTimeout(user) ? (
+                        <button
+                          onClick={() => handleRemoveTimeout(user.id)}
+                          disabled={loading === user.id}
+                          className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          title="Ukloni timeout"
+                        >
+                          <X className="h-4 w-4" />
+                          <span>Ukloni</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setShowTimeoutDialog(user.id)}
+                          disabled={loading === user.id}
+                          className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-amber-600 text-white rounded hover:bg-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          title="Stavi korisnika u timeout"
+                        >
+                          <Clock className="h-4 w-4" />
+                          <span>Timeout</span>
+                        </button>
+                      )}
+
+                      {/* Ban button */}
+                      <button
+                        onClick={() => setShowBanDialog(user.id)}
+                        disabled={loading === user.id}
+                        className="inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Banaj korisnika"
+                      >
+                        <Ban className="h-4 w-4" />
+                        <span>Banaj</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Unban button for banned users */}
+                  {user.role !== 'admin' && user.is_banned && (
+                    <button
+                      onClick={() => handleUnbanUser(user.id)}
+                      disabled={loading === user.id}
+                      className="w-full inline-flex items-center justify-center gap-1 px-2 py-2 text-xs bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      title="Ukloni ban"
+                    >
+                      <UserCheck className="h-4 w-4" />
+                      <span>Ukloni Ban</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Ban Dialog */}
       {showBanDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-t-lg sm:rounded-lg w-full sm:max-w-md sm:w-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
               <Ban className="w-5 h-5 text-orange-500" />
               Banaj korisnika
@@ -465,14 +660,14 @@ export function UserManagementClient({ users }: { users: User[] }) {
                   setShowBanDialog(null);
                   setBanReason('');
                 }}
-                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 Odustani
               </button>
               <button
                 onClick={() => handleBanUser(showBanDialog)}
                 disabled={loading === showBanDialog}
-                className="px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
               >
                 {loading === showBanDialog ? 'Bananje...' : 'Banaj'}
               </button>
@@ -483,8 +678,8 @@ export function UserManagementClient({ users }: { users: User[] }) {
 
       {/* Warning Dialog */}
       {showWarnDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-t-lg sm:rounded-lg w-full sm:max-w-md sm:w-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-yellow-500" />
               Upozori korisnika
@@ -507,14 +702,14 @@ export function UserManagementClient({ users }: { users: User[] }) {
                   setShowWarnDialog(null);
                   setWarnReason('');
                 }}
-                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 Odustani
               </button>
               <button
                 onClick={() => handleWarnUser(showWarnDialog)}
                 disabled={loading === showWarnDialog || !warnReason.trim()}
-                className="px-4 py-2 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50"
               >
                 {loading === showWarnDialog ? 'Slanje...' : 'Posalji upozorenje'}
               </button>
@@ -525,8 +720,8 @@ export function UserManagementClient({ users }: { users: User[] }) {
 
       {/* Timeout Dialog */}
       {showTimeoutDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-t-lg sm:rounded-lg w-full sm:max-w-md sm:w-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
               <Clock className="w-5 h-5 text-amber-500" />
               Timeout korisnika
@@ -567,14 +762,14 @@ export function UserManagementClient({ users }: { users: User[] }) {
                   setTimeoutReason('');
                   setTimeoutDuration(24);
                 }}
-                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 Odustani
               </button>
               <button
                 onClick={() => handleTimeoutUser(showTimeoutDialog)}
                 disabled={loading === showTimeoutDialog || !timeoutReason.trim()}
-                className="px-4 py-2 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50"
               >
                 {loading === showTimeoutDialog ? 'Postavljanje...' : 'Postavi timeout'}
               </button>
