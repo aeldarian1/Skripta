@@ -89,14 +89,15 @@ export function NotificationList({
 
   return (
     <Card className="w-full md:w-105 max-w-full md:max-w-md h-screen md:h-auto max-h-screen md:max-h-150 overflow-hidden border-gray-200 dark:border-gray-700 md:animate-slide-down rounded-2xl md:rounded-xl">
-      <div className="p-4 md:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-linear-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-750 dark:to-gray-800">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2.5 rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40">
+      <div className="p-4 md:p-5 border-b border-blue-200/50 dark:border-blue-800/30 flex items-center justify-between bg-linear-to-br from-blue-50 via-indigo-50 to-blue-50 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-blue-950/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent dark:via-white/5 pointer-events-none"></div>
+        <div className="flex items-center gap-2.5 relative z-10">
+          <div className="p-2.5 rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 shadow-sm">
             <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h3 className="font-bold text-lg md:text-xl text-gray-900 dark:text-white">Obavijesti</h3>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 relative z-10">
           {notifications.some((n) => !n.is_read) && (
             <Button
               variant="ghost"
