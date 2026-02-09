@@ -33,7 +33,7 @@ export function TypingIndicator({ topicId, currentUserId, currentUsername }: Typ
         .from('typing_indicators')
         .select('user_id, updated_at')
         .eq('topic_id', topicId)
-        .neq('user_id', currentUserId);
+        .neq('user_id', currentUserId) as { data: Array<{ user_id: string; updated_at: string }> | null; error: any };
 
       if (indicators && indicators.length > 0) {
         const userIds = indicators.map((i) => i.user_id);
