@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Cloud, CloudOff, Check, Loader2 } from 'lucide-react';
+import { Cloud, CloudOff, Check, AlertCircle } from 'lucide-react';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -41,27 +41,31 @@ export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps)
     switch (status) {
       case 'saving':
         return {
-          icon: <Loader2 className="w-3.5 h-3.5 animate-spin" />,
+          icon: <Cloud className="w-4 h-4 animate-pulse" />,
           text: 'Spremam...',
-          color: 'text-blue-600 dark:text-blue-400',
+          color: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+          borderColor: 'border-blue-200 dark:border-blue-700',
         };
       case 'saved':
         return {
-          icon: <Check className="w-3.5 h-3.5" />,
+          icon: <Check className="w-4 h-4" />,
           text: lastSaved ? `Spremljeno ${relativeTime}` : 'Spremljeno',
-          color: 'text-green-600 dark:text-green-400',
+          color: 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+          borderColor: 'border-green-200 dark:border-green-700',
         };
       case 'error':
         return {
-          icon: <CloudOff className="w-3.5 h-3.5" />,
+          icon: <AlertCircle className="w-4 h-4" />,
           text: 'Greška pri spremanju',
-          color: 'text-red-600 dark:text-red-400',
+          color: 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+          borderColor: 'border-red-200 dark:border-red-700',
         };
       default:
         return {
-          icon: <Cloud className="w-3.5 h-3.5" />,
-          text: 'Nespremljeno',
-          color: 'text-gray-500 dark:text-gray-400',
+          icon: <Cloud className="w-4 h-4" />,
+          text: 'Spremam...',
+          color: 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
+          borderColor: 'border-gray-200 dark:border-gray-700',
         };
     }
   };
@@ -69,9 +73,9 @@ export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps)
   const display = getStatusDisplay();
 
   return (
-    <div className={`flex items-center gap-1.5 text-xs ${display.color} transition-colors`}>
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${display.color} ${display.borderColor} transition-all`}>
       {display.icon}
-      <span className="hidden sm:inline">{display.text}</span>
+      <span>{display.text}</span>
     </div>
   );
 }

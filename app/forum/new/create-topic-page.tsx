@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { AutoSaveIndicator, SaveStatus } from '@/components/forum/new/auto-save-indicator';
-import { ArrowLeft, Send, Save, AlertCircle, Sparkles, Eye, Edit3, Lightbulb, Zap, X } from 'lucide-react';
+import { ArrowLeft, Send, AlertCircle, Sparkles, Eye, Edit3, Lightbulb, Zap, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { uploadAttachment, saveAttachmentMetadata } from '@/lib/attachments';
 import { generateSlug } from '@/lib/utils';
@@ -52,7 +52,6 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
   const [showTips, setShowTips] = useState(true);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const { triggerAnimation: triggerSubmitAnimation, animationClasses: submitAnimation } = useButtonAnimation();
-  const { triggerAnimation: triggerSaveAnimation, animationClasses: saveAnimation } = useButtonAnimation();
 
   // Auto-save draft
   const saveDraft = useCallback(async () => {
@@ -97,12 +96,11 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
       setSaveStatus('saved');
       setLastSaved(new Date());
-      triggerSaveAnimation();
     } catch (err) {
       console.error('Error saving draft:', err);
       setSaveStatus('error');
     }
-  }, [title, content, categoryId, selectedTags, draftId, triggerSaveAnimation]);
+  }, [title, content, categoryId, selectedTags, draftId]);
 
   // Auto-save on changes
   useEffect(() => {
@@ -140,12 +138,6 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+S or Cmd+S to save draft
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        saveDraft();
-        toast.success('Nacrt spremljen!');
-      }
       // Ctrl+Enter or Cmd+Enter to submit
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
@@ -162,7 +154,7 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [title, content, categoryId, isSubmitting, saveDraft]);
+  }, [title, content, categoryId, isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -737,12 +729,7 @@ Tko bi imao koristi od ovog resursa...`,
               )}
             </Button>
 
-            <Button type="button" variant="outline" onClick={saveDraft} disabled={saveStatus === 'saving'} className={`flex-1 sm:flex-none h-11 ${saveAnimation}`}>
-              <Save className="w-4 h-4 mr-2" />
-              Spremi nacrt
-            </Button>
-
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
             </div>
           </div>
