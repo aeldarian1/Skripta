@@ -483,8 +483,6 @@ Tko bi imao koristi od ovog resursa...`,
               Podijeli svoje znanje ili postavi pitanje zajednici
             </p>
           </div>
-
-          <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
         </div>
       </div>
 
