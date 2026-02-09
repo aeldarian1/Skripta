@@ -708,28 +708,34 @@ Tko bi imao koristi od ovog resursa...`,
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 sticky bottom-0 bg-white dark:bg-gray-900 p-4 border-t dark:border-gray-800 -mx-3 sm:-mx-4">
-          <Button
-            type="submit"
-            disabled={isSubmitting || !title.trim() || !content.trim() || !categoryId}
-            className={`flex-1 sm:flex-none h-11 sm:px-8 ${submitAnimation}`}
-          >
-            {isSubmitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Objavljujem...
-              </>
-            ) : (
-              <>
-                <Send className="w-4 h-4 mr-2" />
-                Objavi temu
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3 flex-1 items-stretch sm:items-center">
+            <Button
+              type="submit"
+              disabled={isSubmitting || !title.trim() || !content.trim() || !categoryId}
+              className={`flex-1 sm:flex-none h-11 sm:px-8 ${submitAnimation}`}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Objavljujem...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Objavi temu
+                </>
+              )}
+            </Button>
 
-          <Button type="button" variant="outline" onClick={saveDraft} disabled={saveStatus === 'saving'} className={`flex-1 sm:flex-none h-11 ${saveAnimation}`}>
-            <Save className="w-4 h-4 mr-2" />
-            Spremi nacrt
-          </Button>
+            <Button type="button" variant="outline" onClick={saveDraft} disabled={saveStatus === 'saving'} className={`flex-1 sm:flex-none h-11 ${saveAnimation}`}>
+              <Save className="w-4 h-4 mr-2" />
+              Spremi nacrt
+            </Button>
+
+            <div className="flex items-center">
+              <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
+            </div>
+          </div>
 
           <Button type="button" variant="ghost" onClick={() => router.back()} disabled={isSubmitting} className="sm:ml-auto h-11">
             Odustani

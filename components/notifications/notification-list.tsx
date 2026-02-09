@@ -88,93 +88,105 @@ export function NotificationList({
   };
 
   return (
-    <Card className="w-full md:w-[420px] max-w-full md:max-w-md h-[100vh] md:h-auto max-h-[100vh] md:max-h-[600px] overflow-hidden shadow-xl md:shadow-2xl border-gray-200 dark:border-gray-700 md:animate-slide-down">
-      <div className="p-4 md:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-850">
-        <div className="flex items-center gap-2">
-          <div className="hidden md:block p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-            <Bell className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+    <Card className="w-full md:w-[420px] max-w-full md:max-w-md h-[100vh] md:h-auto max-h-[100vh] md:max-h-[600px] overflow-hidden shadow-xl md:shadow-2xl border-gray-200 dark:border-gray-700 md:animate-slide-down rounded-2xl md:rounded-xl">
+      <div className="p-4 md:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-750 dark:to-gray-800">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40">
+            <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h3 className="font-bold text-lg md:text-xl text-gray-900 dark:text-white">Obavijesti</h3>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           {notifications.some((n) => !n.is_read) && (
             <Button
               variant="ghost"
               size="sm"
               onClick={handleMarkAllAsRead}
               title="Označi sve kao pročitano"
-              className="h-9 px-3 md:h-9 md:px-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              className="h-8 px-3 md:h-8 md:px-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
             >
               <CheckCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="ml-1.5 md:inline text-xs font-medium">Sve</span>
+              <span className="ml-1.5 text-xs font-semibold hidden sm:inline">Sve</span>
             </Button>
           )}
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg"
+            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg"
             aria-label="Zatvori obavijesti"
           >
-            <X className="w-5 h-5 md:w-4.5 md:h-4.5 text-gray-600 dark:text-gray-400" />
+            <X className="w-5 h-5 md:w-4 md:h-4 text-gray-600 dark:text-gray-400" />
           </Button>
         </div>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-140px)] md:h-auto md:max-h-[500px]">
+      <div className="overflow-y-auto h-[calc(100vh-140px)] md:h-auto md:max-h-[500px] scrollbar-hide">
         {notifications.length === 0 ? (
           <div className="p-12 md:p-16 text-center text-gray-500">
             <div className="relative inline-block mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-800 dark:to-purple-800 rounded-full blur-xl opacity-30"></div>
-              <div className="relative bg-gray-100 dark:bg-gray-800 rounded-full p-6">
-                <MessageSquare className="w-12 h-12 text-gray-400 dark:text-gray-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-800 dark:to-indigo-800 rounded-full blur-2xl opacity-20"></div>
+              <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full p-6 border border-blue-100 dark:border-blue-800/50">
+                <Bell className="w-12 h-12 text-blue-400 dark:text-blue-500" />
               </div>
             </div>
-            <p className="text-base font-medium text-gray-700 dark:text-gray-300">Nemaš novih obavijesti</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Bit ćeš obaviješten kada netko odgovori</p>
+            <p className="text-base font-semibold text-gray-700 dark:text-gray-300">Nemaš novih obavijesti</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Bit ćeš obaviješten kada netko odgovori na tvoje teme</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100 dark:divide-gray-700/50">
-            {notifications.map((notification) => (
+          <div className="p-3">
               <div
                 key={notification.id}
-                className={`group relative p-4 md:p-4 cursor-pointer transition-all duration-200 ${
+                className={`group relative mx-3 my-2 p-4 cursor-pointer transition-all duration-250 rounded-xl border ${
                   !notification.is_read
-                    ? 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                } active:bg-gray-100 dark:active:bg-gray-700`}
+                    ? 'bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-purple-500/5 border-blue-200 dark:border-blue-800/30 dark:from-blue-500/10 dark:via-indigo-500/10 dark:to-purple-500/10 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700/50'
+                    : 'bg-white dark:bg-gray-800/40 border-gray-200 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600/50 hover:shadow-sm'
+                } hover:scale-[1.01] active:scale-95`}
                 onClick={() => handleNotificationClick(notification)}
               >
                 {!notification.is_read && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-indigo-500"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500 rounded-l-[10px]"></div>
                 )}
 
                 <div className="flex items-start gap-3 md:gap-4">
-                  <div className="flex-shrink-0 mt-0.5 p-2 rounded-lg bg-white dark:bg-gray-700/50 shadow-sm group-hover:shadow-md transition-shadow">
+                  <div className={`flex-shrink-0 mt-0.5 p-2.5 rounded-xl shadow-sm group-hover:shadow-lg transition-all duration-200 ${
+                    notification.type === 'upvote' 
+                      ? 'bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40'
+                      : notification.type === 'topic_pinned'
+                      ? 'bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/40'
+                      : notification.type === 'follow'
+                      ? 'bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40'
+                      : notification.type === 'new_message'
+                      ? 'bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/40 dark:to-rose-900/40'
+                      : notification.type === 'report'
+                      ? 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/40'
+                      : 'bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40'
+                  }`}>
                     {getIcon(notification.type)}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm md:text-base text-gray-900 dark:text-white line-clamp-2">
-                          {notification.title}
-                        </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                          {notification.message}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <p className="text-xs text-gray-500 dark:text-gray-500">
-                            {formatTimeAgo(notification.created_at)}
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-bold text-sm md:text-base text-gray-900 dark:text-white line-clamp-2">
+                            {notification.title}
                           </p>
                           {!notification.is_read && (
-                            <>
-                              <span className="text-gray-300 dark:text-gray-600">•</span>
-                              <div className="flex items-center gap-1.5">
-                                <span className="inline-block w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
-                                <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold">Novo</span>
-                              </div>
-                            </>
+                            <span className="inline-block w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex-shrink-0"></span>
+                          )}
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2.5">
+                          {notification.message}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-500 dark:text-gray-500 font-medium">
+                            {formatTimeAgo(notification.created_at)}
+                          </span>
+                          {!notification.is_read && (
+                            <span className="text-xs bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2 py-0.5 rounded-full font-semibold">
+                              Novo
+                            </span>
                           )}
                         </div>
                       </div>
@@ -182,7 +194,7 @@ export function NotificationList({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex-shrink-0 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all rounded-lg"
+                        className="flex-shrink-0 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all rounded-lg ml-2"
                         onClick={(e) => handleDelete(e, notification.id)}
                         aria-label="Obriši obavijest"
                       >
@@ -198,14 +210,15 @@ export function NotificationList({
       </div>
 
       {notifications.length > 0 && (
-        <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white to-gray-50/50 dark:from-gray-800/50 dark:to-gray-800/30">
           <Link href="/notifications" onClick={onClose}>
             <Button
               variant="ghost"
               size="sm"
-              className="w-full h-10 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              className="w-full h-10 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors rounded-lg"
             >
-              Vidi sve obavijesti →
+              Vidi sve obavijesti
+              <span className="ml-2">→</span>
             </Button>
           </Link>
         </div>
