@@ -59,22 +59,61 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
   // Initialize auto-save preference from localStorage
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const stored = localStorage.getItem(AUTOSAVE_PREF_KEY);
     if (stored !== null) {
       setAutoSaveEnabled(stored === 'true');
     }
   }, []);
 
+  // Load local backup on mount if no initial draft
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    if (initialDraft) return; // Skip if there's already a draft loaded
+
+    const backupKey = STORAGE_KEY_PREFIX + 'new';
+    const backup = localStorage.getItem(backupKey);
+
+    console.log('🔍 Checking local backup:', { backupKey, hasBackup: !!backup });
+
+    if (backup) {
+      try {
+        const parsed = JSON.parse(backup);
+        console.log('📂 Loaded backup:', { title: parsed.title?.slice(0, 30), content: parsed.content?.slice(0, 30) });
+        
+        if (parsed.title || parsed.content) {
+          setTitle(parsed.title || '');
+          setContent(parsed.content || '');
+          setCategoryId(parsed.categoryId || '');
+          setSelectedTags(parsed.selectedTags || []);
+          setHasLocalBackup(true);
+        }
+      } catch (err) {
+        console.error('❌ Error loading backup:', err);
+      }
+    }
+  }, [initialDraft]);
+
   // Save auto-save preference
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     localStorage.setItem(AUTOSAVE_PREF_KEY, autoSaveEnabled.toString());
   }, [autoSaveEnabled]);
 
   // Local storage backup - save immediately on every change
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     if (!title && !content) {
-      // Clear local backup if empty
-      localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
+      // Clear both possible backup keys
+      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
+      if (draftId) {
+        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
+      }
       setHasLocalBackup(false);
       return;
     }
@@ -87,8 +126,16 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
       timestamp: new Date().toISOString(),
     };
 
+    // Always save with 'new' key for new drafts, or draftId when it exists
     const storageKey = STORAGE_KEY_PREFIX + (draftId || 'new');
     localStorage.setItem(storageKey, JSON.stringify(backup));
+    console.log('💾 Saved backup to localStorage:', { storageKey, titleLen: title.length, contentLen: content.length });
+    
+    // Also save with 'new' key for easy loading on next visit
+    if (draftId) {
+      localStorage.setItem(STORAGE_KEY_PREFIX + 'new', JSON.stringify(backup));
+    }
+    
     setHasLocalBackup(true);
   }, [title, content, categoryId, selectedTags, draftId]);
 
@@ -105,10 +152,15 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
       // Delete from database if it exists
       if (draftId) {
         await supabase.from('topic_drafts').delete().eq('id', draftId);
+        console.log('🗑️ Deleted draft from database:', draftId);
       }
 
-      // Clear local storage backup
-      localStorage.removeItem(STORAGE_KEY_PREFIX + (draftId || 'new'));
+      // Clear local storage backup - both keys
+      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
+      if (draftId) {
+        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
+      }
+      console.log('🗑️ Cleared local storage backups');
 
       // Reset form
       setTitle('');
@@ -453,6 +505,12 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
       // Delete draft if exists
       if (draftId) {
         await (supabase as any).from('topic_drafts').delete().eq('id', draftId);
+      }
+
+      // Clear all local storage backups after successful publish
+      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
+      if (draftId) {
+        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
       }
 
       triggerSubmitAnimation();
