@@ -35,8 +35,6 @@ const MarkdownRenderer = dynamic(
 const MAX_TITLE_LENGTH = 200;
 const MAX_CONTENT_LENGTH = 10000;
 const AUTOSAVE_DELAY = 3000; // 3 seconds
-const STORAGE_KEY_PREFIX = 'topic_draft_';
-const AUTOSAVE_PREF_KEY = 'topic_autosave_enabled';
 
 export function CreateTopicPage({ categories, tags, initialDraft, universitySlug, facultySlug, facultyId, preSelectedCategoryId }: any) {
   const router = useRouter();
@@ -52,134 +50,8 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
   const [error, setError] = useState('');
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showTips, setShowTips] = useState(true);
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
-  const [hasLocalBackup, setHasLocalBackup] = useState(false);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const { triggerAnimation: triggerSubmitAnimation, animationClasses: submitAnimation } = useButtonAnimation();
-
-  // Initialize auto-save preference from localStorage
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const stored = localStorage.getItem(AUTOSAVE_PREF_KEY);
-    if (stored !== null) {
-      setAutoSaveEnabled(stored === 'true');
-    }
-  }, []);
-
-  // Load local backup on mount if no initial draft
-  useEffect(() => {
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-    if (initialDraft) return; // Skip if there's already a draft loaded
-
-    const backupKey = STORAGE_KEY_PREFIX + 'new';
-    const backup = localStorage.getItem(backupKey);
-
-    console.log('🔍 Checking local backup:', { backupKey, hasBackup: !!backup });
-
-    if (backup) {
-      try {
-        const parsed = JSON.parse(backup);
-        console.log('📂 Loaded backup:', { title: parsed.title?.slice(0, 30), content: parsed.content?.slice(0, 30) });
-        
-        if (parsed.title || parsed.content) {
-          setTitle(parsed.title || '');
-          setContent(parsed.content || '');
-          setCategoryId(parsed.categoryId || '');
-          setSelectedTags(parsed.selectedTags || []);
-          setHasLocalBackup(true);
-        }
-      } catch (err) {
-        console.error('❌ Error loading backup:', err);
-      }
-    }
-  }, [initialDraft]);
-
-  // Save auto-save preference
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    localStorage.setItem(AUTOSAVE_PREF_KEY, autoSaveEnabled.toString());
-  }, [autoSaveEnabled]);
-
-  // Local storage backup - save immediately on every change
-  useEffect(() => {
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-
-    if (!title && !content) {
-      // Clear both possible backup keys
-      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
-      if (draftId) {
-        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
-      }
-      setHasLocalBackup(false);
-      return;
-    }
-
-    const backup = {
-      title,
-      content,
-      categoryId,
-      selectedTags,
-      timestamp: new Date().toISOString(),
-    };
-
-    // Always save with 'new' key for new drafts, or draftId when it exists
-    const storageKey = STORAGE_KEY_PREFIX + (draftId || 'new');
-    localStorage.setItem(storageKey, JSON.stringify(backup));
-    console.log('💾 Saved backup to localStorage:', { storageKey, titleLen: title.length, contentLen: content.length });
-    
-    // Also save with 'new' key for easy loading on next visit
-    if (draftId) {
-      localStorage.setItem(STORAGE_KEY_PREFIX + 'new', JSON.stringify(backup));
-    }
-    
-    setHasLocalBackup(true);
-  }, [title, content, categoryId, selectedTags, draftId]);
-
-  // Discard draft function
-  const discardDraft = useCallback(async () => {
-    if (!window.confirm('Jeste li sigurni da želite obrisati nacrt? Ova akcija se ne može poništiti.')) {
-      return;
-    }
-
-    try {
-      setSaveStatus('saving');
-      const supabase = createClient();
-
-      // Delete from database if it exists
-      if (draftId) {
-        await supabase.from('topic_drafts').delete().eq('id', draftId);
-        console.log('🗑️ Deleted draft from database:', draftId);
-      }
-
-      // Clear local storage backup - both keys
-      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
-      if (draftId) {
-        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
-      }
-      console.log('🗑️ Cleared local storage backups');
-
-      // Reset form
-      setTitle('');
-      setContent('');
-      setCategoryId('');
-      setSelectedTags([]);
-      setSelectedFiles([]);
-      setDraftId(null);
-      setHasLocalBackup(false);
-      setSaveStatus('idle');
-
-      toast.success('Nacrt obrisan');
-      router.push(`/forum/${universitySlug}/${facultySlug}`);
-    } catch (err) {
-      console.error('Error discarding draft:', err);
-      setSaveStatus('error');
-      toast.error('Greška pri brisanju nacrta');
-    }
-  }, [draftId, universitySlug, facultySlug, router]);
 
   // Auto-save draft
   const saveDraft = useCallback(async () => {
@@ -230,33 +102,30 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
     }
   }, [title, content, categoryId, selectedTags, draftId]);
 
-  // Auto-save on changes (only if enabled)
+  // Auto-save on changes
   useEffect(() => {
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
 
-    if (!autoSaveEnabled || !title || !content) {
-      return;
+    if (title || content) {
+      setSaveStatus('idle');
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        saveDraft();
+      }, AUTOSAVE_DELAY);
     }
-
-    setSaveStatus('idle');
-    autoSaveTimeoutRef.current = setTimeout(() => {
-      saveDraft();
-    }, AUTOSAVE_DELAY);
 
     return () => {
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
-  }, [title, content, categoryId, selectedTags, saveDraft, autoSaveEnabled]);
+  }, [title, content, categoryId, selectedTags, saveDraft]);
 
   // Warn before leaving with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Warn if there's content but it's not saved on server (auto-save enabled) or not backed up locally
-      if ((title || content) && (autoSaveEnabled && saveStatus !== 'saved') || (!autoSaveEnabled && !hasLocalBackup)) {
+      if ((title || content) && saveStatus !== 'saved') {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -264,7 +133,7 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [title, content, saveStatus, autoSaveEnabled, hasLocalBackup]);
+  }, [title, content, saveStatus]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -505,12 +374,6 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
       // Delete draft if exists
       if (draftId) {
         await (supabase as any).from('topic_drafts').delete().eq('id', draftId);
-      }
-
-      // Clear all local storage backups after successful publish
-      localStorage.removeItem(STORAGE_KEY_PREFIX + 'new');
-      if (draftId) {
-        localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
       }
 
       triggerSubmitAnimation();
@@ -866,25 +729,11 @@ Tko bi imao koristi od ovog resursa...`,
               )}
             </Button>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
               <AutoSaveIndicator 
                 status={saveStatus} 
                 lastSaved={lastSaved}
-                hasLocalBackup={hasLocalBackup}
-                autoSaveEnabled={autoSaveEnabled}
-                onToggleAutoSave={setAutoSaveEnabled}
               />
-              {(title || content) && (
-                <button
-                  type="button"
-                  onClick={discardDraft}
-                  disabled={isSubmitting}
-                  className="px-3 py-1.5 rounded-full border text-sm font-medium bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-800/50 transition-all"
-                  title="Obriši nacrt"
-                >
-                  🗑️ Obriši
-                </button>
-              )}
             </div>
           </div>
 
