@@ -2,26 +2,35 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { EnhancedMarkdownEditor } from '@/components/forum/new/enhanced-markdown-editor';
-import { EnhancedFileUpload } from '@/components/forum/new/enhanced-file-upload';
 import { AutoSaveIndicator, SaveStatus } from '@/components/forum/new/auto-save-indicator';
 import { ArrowLeft, Send, Save, AlertCircle, Sparkles, Eye, Edit3, Lightbulb, Zap, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { uploadAttachment, saveAttachmentMetadata } from '@/lib/attachments';
 import { generateSlug } from '@/lib/utils';
 import { processMentions } from '@/app/forum/actions';
-import { detectSpam, detectDuplicate, detectRapidPosting } from '@/lib/spam-detection';
-import { checkAndAwardAchievements } from '@/app/forum/achievements/actions';
-import { moderateContent } from '@/lib/content-moderation';
 import { Breadcrumb } from '@/components/forum/breadcrumb';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useButtonAnimation } from '@/hooks/use-button-animation';
-import { MarkdownRenderer } from '@/components/forum/markdown-renderer';
+
+// Dynamic imports for heavy components - reduces initial bundle ~200KB
+const EnhancedMarkdownEditor = dynamic(
+  () => import('@/components/forum/new/enhanced-markdown-editor').then(mod => mod.EnhancedMarkdownEditor),
+  { ssr: false }
+);
+const EnhancedFileUpload = dynamic(
+  () => import('@/components/forum/new/enhanced-file-upload').then(mod => mod.EnhancedFileUpload),
+  { ssr: false }
+);
+const MarkdownRenderer = dynamic(
+  () => import('@/components/forum/markdown-renderer').then(mod => mod.MarkdownRenderer),
+  { ssr: false }
+);
 
 const MAX_TITLE_LENGTH = 200;
 const MAX_CONTENT_LENGTH = 10000;
@@ -216,7 +225,8 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
         }
       }
 
-      // Spam detection - check title and content
+      // Spam detection - dynamically loaded only at submit time
+      const { detectSpam, detectDuplicate, detectRapidPosting } = await import('@/lib/spam-detection');
       const titleSpamCheck = detectSpam(title.trim());
       if (titleSpamCheck.isSpam) {
         toast.error(`Naslov je označen kao spam: ${titleSpamCheck.reason}`, { id: loadingToast });
@@ -271,7 +281,8 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
         }
       }
 
-      // Content moderation - check for inappropriate content
+      // Content moderation - dynamically loaded only at submit time
+      const { moderateContent } = await import('@/lib/content-moderation');
       const moderationResult = await moderateContent({
         content: content.trim(),
         title: title.trim(),
@@ -350,7 +361,8 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
       // Process mentions and create notifications
       await processMentions(content.trim(), user.id, topic.id);
 
-      // Check and award achievements
+      // Check and award achievements - dynamically loaded
+      const { checkAndAwardAchievements } = await import('@/app/forum/achievements/actions');
       const newAchievements = await checkAndAwardAchievements(user.id);
 
       // Show achievement notifications

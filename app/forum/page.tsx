@@ -26,18 +26,22 @@ export default async function ForumPage() {
 
     // If user has saved preferences, redirect to their faculty forum
     if (profile?.university_id && profile?.faculty_id) {
-      // Get university and faculty slugs
-      const { data: university } = await supabase
-        .from('universities')
-        .select('slug')
-        .eq('id', profile.university_id)
-        .single() as { data: Pick<University, 'slug'> | null };
+      // Fetch university and faculty slugs in parallel
+      const [universityResult, facultyResult] = await Promise.all([
+        supabase
+          .from('universities')
+          .select('slug')
+          .eq('id', profile.university_id)
+          .single(),
+        supabase
+          .from('faculties')
+          .select('slug')
+          .eq('id', profile.faculty_id)
+          .single(),
+      ]);
 
-      const { data: faculty } = await supabase
-        .from('faculties')
-        .select('slug')
-        .eq('id', profile.faculty_id)
-        .single() as { data: Pick<Faculty, 'slug'> | null };
+      const university = universityResult.data as Pick<University, 'slug'> | null;
+      const faculty = facultyResult.data as Pick<Faculty, 'slug'> | null;
 
       if (university && faculty) {
         redirect(`/forum/${university.slug}/${faculty.slug}`);

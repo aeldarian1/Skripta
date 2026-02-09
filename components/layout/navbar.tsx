@@ -11,7 +11,7 @@ import { NavLink } from './nav-link';
 import { ForumDropdown } from './forum-dropdown';
 import { PWAInstallButton } from './pwa-install-button';
 import { logout } from '@/app/auth/actions';
-import { MessageSquare, User, LogOut, Search, Settings, Bookmark, Mail } from 'lucide-react';
+import { LogOut, Mail } from 'lucide-react';
 import type { Notification } from '@/types/notifications';
 import type { Profile, University, Faculty } from '@/types/database';
 
@@ -25,8 +25,8 @@ export async function Navbar() {
   let notifications: Notification[] = [];
   let unreadCount = 0;
 
-  // Run queries in parallel for better performance
-  const [profileResult, universitiesResult] = await Promise.all([
+  // Run ALL queries in parallel for better performance (profile + universities + notifications)
+  const [profileResult, universitiesResult, notificationResult] = await Promise.all([
     user
       ? supabase.from('profiles').select('*').eq('id', user.id).single()
       : Promise.resolve({ data: null }),
@@ -34,42 +34,41 @@ export async function Navbar() {
       .from('universities')
       .select('id, name, slug, faculties(id, name, abbreviation, slug)')
       .order('name', { ascending: true }),
+    user
+      ? supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20)
+      : Promise.resolve({ data: null }),
   ]);
 
   profile = profileResult.data as Profile | null;
 
-  if (user) {
-    // Fetch notifications with optimized query
-    const { data: notificationData } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(20);
+  if (user && notificationResult.data && notificationResult.data.length > 0) {
+    const notificationData = notificationResult.data;
+    // Get unique actor IDs
+    const actorIds = [...new Set(notificationData.map((n: any) => n.actor_id).filter(Boolean))];
 
-    if (notificationData && notificationData.length > 0) {
-      // Get unique actor IDs
-      const actorIds = [...new Set(notificationData.map((n: any) => n.actor_id).filter(Boolean))];
+    // Fetch actors separately if there are any
+    let actorsMap = new Map();
+    if (actorIds.length > 0) {
+      const { data: actorsData } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url')
+        .in('id', actorIds);
 
-      // Fetch actors separately if there are any
-      let actorsMap = new Map();
-      if (actorIds.length > 0) {
-        const { data: actorsData } = await supabase
-          .from('profiles')
-          .select('id, username, avatar_url')
-          .in('id', actorIds);
-
-        actorsMap = new Map((actorsData || []).map((a: any) => [a.id, a]));
-      }
-
-      // Combine notifications with actor data
-      notifications = notificationData.map((n: any) => ({
-        ...n,
-        actor: n.actor_id ? actorsMap.get(n.actor_id) : null,
-      })) as Notification[];
-
-      unreadCount = notifications.filter((n) => !n.is_read).length;
+      actorsMap = new Map((actorsData || []).map((a: any) => [a.id, a]));
     }
+
+    // Combine notifications with actor data
+    notifications = notificationData.map((n: any) => ({
+      ...n,
+      actor: n.actor_id ? actorsMap.get(n.actor_id) : null,
+    })) as Notification[];
+
+    unreadCount = notifications.filter((n) => !n.is_read).length;
   }
 
   const universities = (universitiesResult.data || []).map((uni: any) => ({

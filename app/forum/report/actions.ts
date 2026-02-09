@@ -126,7 +126,7 @@ export async function submitReport(formData: FormData) {
       }));
 
       // Use service role client to bypass RLS when creating admin notifications
-      const serviceRoleClient = createServiceRoleClient();
+      const serviceRoleClient = await createServiceRoleClient();
       const { error: notificationError } = await (serviceRoleClient as any)
         .from('notifications')
         .insert(notifications);

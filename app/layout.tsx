@@ -61,8 +61,9 @@ export default function RootLayout({
         {/* Preconnect to external resources for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* DNS prefetch for Supabase */}
-        <link rel="dns-prefetch" href="https://supabase.co" />
+        {/* Preconnect to Supabase for faster API calls */}
+        <link rel="preconnect" href="https://fshdebfiyokhhrgqvnpz.supabase.co" />
+        <link rel="dns-prefetch" href="https://fshdebfiyokhhrgqvnpz.supabase.co" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider

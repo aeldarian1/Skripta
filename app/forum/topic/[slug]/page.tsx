@@ -99,14 +99,15 @@ export default async function TopicPage({
       `)
       .eq('topic_id', topic.id)
       .order('is_solution', { ascending: false })
-      .order('created_at', { ascending: true }),
+      .order('created_at', { ascending: true })
+      .limit(50),
     supabase
       .from('topic_tags')
       .select('tags(id, name, slug, color)')
       .eq('topic_id', topic.id),
     supabase
       .from('categories')
-      .select('*')
+      .select('id, name, slug, color, icon, order_index')
       .order('order_index', { ascending: true }),
     // Reactions query - with error handling for when table doesn't exist
     (supabase as any)
@@ -115,8 +116,6 @@ export default async function TopicPage({
       .eq('topic_id', topic.id)
       .then((res: any) => res)
       .catch((err: any) => ({ data: null, error: err })),
-    // Placeholder for reply reactions - will fetch after we have replies
-    Promise.resolve({ data: null }),
     // Poll query - with error handling for when table doesn't exist
     (supabase as any)
       .from('polls')
@@ -132,32 +131,40 @@ export default async function TopicPage({
   const topicTags = results[1].data;
   const categories = results[2].data;
   const topicReactions = results[3].data;
-  let replyReactionsData: any = results[4].data;
-  const pollData = results[5].data;
+  const pollData = results[4].data;
 
-  // Now fetch reply reactions if we have replies
+  // SECOND PARALLEL BATCH: Fetch reply reactions + attachments together
+  let replyReactionsData: any = null;
+  let allAttachments: any = null;
+
   if (replies && replies.length > 0) {
-    try {
-      const { data } = await (supabase as any)
+    const replyIds = replies.map((r: any) => r.id);
+    const [replyReactionsResult, attachmentsResult] = await Promise.all([
+      (supabase as any)
         .from('reactions')
         .select('id, emoji, user_id, created_at, reply_id')
         .not('reply_id', 'is', null)
-        .in('reply_id', replies.map((r: any) => r.id));
-      replyReactionsData = data;
-    } catch (err) {
-      console.error('Failed to fetch reply reactions:', err);
-      replyReactionsData = null;
-    }
+        .in('reply_id', replyIds)
+        .then((res: any) => res)
+        .catch((err: any) => ({ data: null, error: err })),
+      supabase
+        .from('attachments')
+        .select('*')
+        .or(`topic_id.eq.${topic.id},reply_id.in.(${replyIds.join(',')})`)
+    ]);
+    replyReactionsData = replyReactionsResult.data;
+    allAttachments = attachmentsResult.data;
+  } else {
+    // No replies - only fetch topic attachments
+    const { data } = await supabase
+      .from('attachments')
+      .select('*')
+      .eq('topic_id', topic.id);
+    allAttachments = data;
   }
 
   // Attach tags to topic
   topic.topic_tags = topicTags || [];
-
-  // Get ALL attachments (topic + replies) in one query - only if there are replies
-  const { data: allAttachments } = await supabase
-    .from('attachments')
-    .select('*')
-    .or(`topic_id.eq.${topic.id}${replies && replies.length > 0 ? `,reply_id.in.(${replies.map((r: any) => r.id).join(',')})` : ''}`);
 
   const topicAttachments = allAttachments?.filter((a: any) => a.topic_id === topic.id) || [];
   const replyAttachments = allAttachments?.filter((a: any) => a.reply_id) || [];

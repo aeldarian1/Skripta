@@ -1,8 +1,13 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { SkriptaLogo } from "@/components/branding/skripta-logo";
-import { TestimonialSlider } from "@/components/testimonial-slider";
 import { MessageSquare, Users, BookOpen, Lightbulb, TrendingUp, Award, ArrowRight, Sparkles } from "lucide-react";
+
+// Lazy-load heavy client component (below the fold) - reduces initial bundle
+const TestimonialSlider = dynamic(
+  () => import("@/components/testimonial-slider").then(mod => mod.TestimonialSlider),
+);
 
 // Metadata for SEO
 export const metadata = {
