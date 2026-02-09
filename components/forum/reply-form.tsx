@@ -390,7 +390,7 @@ export function ReplyForm({ topicId, quotedText, quotedAuthor, onSuccess, onClea
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4" suppressHydrationWarning>
       {/* Quote Indicator */}
       {quotedText && quotedAuthor && (
         <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded">
