@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { AutoSaveIndicator, SaveStatus } from '@/components/forum/new/auto-save-indicator';
 import { ArrowLeft, Send, AlertCircle, Sparkles, Eye, Edit3, Lightbulb, Zap, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { uploadAttachment, saveAttachmentMetadata } from '@/lib/attachments';
@@ -34,7 +33,7 @@ const MarkdownRenderer = dynamic(
 
 const MAX_TITLE_LENGTH = 200;
 const MAX_CONTENT_LENGTH = 10000;
-const AUTOSAVE_DELAY = 3000; // 3 seconds
+const STORAGE_KEY = 'topic_draft_temp';
 
 export function CreateTopicPage({ categories, tags, initialDraft, universitySlug, facultySlug, facultyId, preSelectedCategoryId }: any) {
   const router = useRouter();
@@ -44,88 +43,53 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
   const [selectedTags, setSelectedTags] = useState<string[]>(initialDraft?.tags || []);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
-  const [lastSaved, setLastSaved] = useState<Date | null>(initialDraft?.updated_at ? new Date(initialDraft.updated_at) : null);
-  const [draftId, setDraftId] = useState<string | null>(initialDraft?.id || null);
   const [error, setError] = useState('');
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showTips, setShowTips] = useState(true);
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const { triggerAnimation: triggerSubmitAnimation, animationClasses: submitAnimation } = useButtonAnimation();
 
-  // Auto-save draft
-  const saveDraft = useCallback(async () => {
-    if (!title && !content) return;
+  // Load localStorage backup on mount
+  useEffect(() => {
+    if (typeof window === 'undefined' || initialDraft) return;
 
-    setSaveStatus('saving');
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const backup = localStorage.getItem(STORAGE_KEY);
+    if (backup) {
+      try {
+        const parsed = JSON.parse(backup);
+        setTitle(parsed.title || '');
+        setContent(parsed.content || '');
+        setCategoryId(parsed.categoryId || '');
+        setSelectedTags(parsed.selectedTags || []);
+      } catch (err) {
+        console.error('Error loading backup:', err);
+      }
+    }
+  }, [initialDraft]);
 
-    if (!user) {
-      setSaveStatus('error');
+  // Save to localStorage on every change
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (!title && !content) {
+      localStorage.removeItem(STORAGE_KEY);
       return;
     }
 
-    try {
-      const draftData = {
-        title: title.trim(),
-        content: content.trim(),
-        category_id: categoryId || null,
-        tags: selectedTags,
-        author_id: user.id,
-      };
-
-      if (draftId) {
-        // Update existing draft
-        const { error } = await (supabase as any).from('topic_drafts').update(draftData).eq('id', draftId);
-
-        if (error) throw error;
-      } else {
-        // Create new draft
-        const { data, error } = await (supabase as any)
-          .from('topic_drafts')
-          .insert(draftData)
-          .select()
-          .single();
-
-        if (error) throw error;
-        if (data) setDraftId(data.id);
-      }
-
-      setSaveStatus('saved');
-      setLastSaved(new Date());
-    } catch (err) {
-      console.error('Error saving draft:', err);
-      setSaveStatus('error');
-    }
-  }, [title, content, categoryId, selectedTags, draftId]);
-
-  // Auto-save on changes
-  useEffect(() => {
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
-
-    if (title || content) {
-      setSaveStatus('idle');
-      autoSaveTimeoutRef.current = setTimeout(() => {
-        saveDraft();
-      }, AUTOSAVE_DELAY);
-    }
-
-    return () => {
-      if (autoSaveTimeoutRef.current) {
-        clearTimeout(autoSaveTimeoutRef.current);
-      }
+    const backup = {
+      title,
+      content,
+      categoryId,
+      selectedTags,
+      timestamp: new Date().toISOString(),
     };
-  }, [title, content, categoryId, selectedTags, saveDraft]);
 
-  // Warn before leaving with unsaved changes
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(backup));
+  }, [title, content, categoryId, selectedTags]);
+
+  // Warn before leaving with unsaved changes (content is auto-saved to localStorage)
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if ((title || content) && saveStatus !== 'saved') {
+      if (!isSubmitting && (title || content)) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -133,7 +97,7 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [title, content, saveStatus]);
+  }, [title, content, isSubmitting]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -371,13 +335,11 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
         });
       }
 
-      // Delete draft if exists
-      if (draftId) {
-        await (supabase as any).from('topic_drafts').delete().eq('id', draftId);
-      }
-
       triggerSubmitAnimation();
       toast.success('Tema uspješno objavljena!', { id: loadingToast });
+
+      // Clear draft from localStorage after successful publish
+      localStorage.removeItem(STORAGE_KEY);
 
       // Redirect to the correct path based on whether we have university/faculty context
       if (universitySlug && facultySlug) {
@@ -728,13 +690,6 @@ Tko bi imao koristi od ovog resursa...`,
                 </>
               )}
             </Button>
-
-            <div className="flex items-center gap-2">
-              <AutoSaveIndicator 
-                status={saveStatus} 
-                lastSaved={lastSaved}
-              />
-            </div>
           </div>
 
           <Button type="button" variant="ghost" onClick={() => router.back()} disabled={isSubmitting} className="sm:ml-auto h-11">
