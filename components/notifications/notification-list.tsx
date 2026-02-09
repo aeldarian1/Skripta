@@ -135,6 +135,7 @@ export function NotificationList({
           </div>
         ) : (
           <div className="p-3">
+            {notifications.map((notification) => (
               <div
                 key={notification.id}
                 className={`group relative mx-3 my-2 p-4 cursor-pointer transition-all duration-250 rounded-xl border ${
