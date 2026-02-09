@@ -35,6 +35,8 @@ const MarkdownRenderer = dynamic(
 const MAX_TITLE_LENGTH = 200;
 const MAX_CONTENT_LENGTH = 10000;
 const AUTOSAVE_DELAY = 3000; // 3 seconds
+const STORAGE_KEY_PREFIX = 'topic_draft_';
+const AUTOSAVE_PREF_KEY = 'topic_autosave_enabled';
 
 export function CreateTopicPage({ categories, tags, initialDraft, universitySlug, facultySlug, facultyId, preSelectedCategoryId }: any) {
   const router = useRouter();
@@ -50,8 +52,82 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
   const [error, setError] = useState('');
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showTips, setShowTips] = useState(true);
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const [hasLocalBackup, setHasLocalBackup] = useState(false);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const { triggerAnimation: triggerSubmitAnimation, animationClasses: submitAnimation } = useButtonAnimation();
+
+  // Initialize auto-save preference from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem(AUTOSAVE_PREF_KEY);
+    if (stored !== null) {
+      setAutoSaveEnabled(stored === 'true');
+    }
+  }, []);
+
+  // Save auto-save preference
+  useEffect(() => {
+    localStorage.setItem(AUTOSAVE_PREF_KEY, autoSaveEnabled.toString());
+  }, [autoSaveEnabled]);
+
+  // Local storage backup - save immediately on every change
+  useEffect(() => {
+    if (!title && !content) {
+      // Clear local backup if empty
+      localStorage.removeItem(STORAGE_KEY_PREFIX + draftId);
+      setHasLocalBackup(false);
+      return;
+    }
+
+    const backup = {
+      title,
+      content,
+      categoryId,
+      selectedTags,
+      timestamp: new Date().toISOString(),
+    };
+
+    const storageKey = STORAGE_KEY_PREFIX + (draftId || 'new');
+    localStorage.setItem(storageKey, JSON.stringify(backup));
+    setHasLocalBackup(true);
+  }, [title, content, categoryId, selectedTags, draftId]);
+
+  // Discard draft function
+  const discardDraft = useCallback(async () => {
+    if (!window.confirm('Jeste li sigurni da želite obrisati nacrt? Ova akcija se ne može poništiti.')) {
+      return;
+    }
+
+    try {
+      setSaveStatus('saving');
+      const supabase = createClient();
+
+      // Delete from database if it exists
+      if (draftId) {
+        await supabase.from('topic_drafts').delete().eq('id', draftId);
+      }
+
+      // Clear local storage backup
+      localStorage.removeItem(STORAGE_KEY_PREFIX + (draftId || 'new'));
+
+      // Reset form
+      setTitle('');
+      setContent('');
+      setCategoryId('');
+      setSelectedTags([]);
+      setSelectedFiles([]);
+      setDraftId(null);
+      setHasLocalBackup(false);
+      setSaveStatus('idle');
+
+      toast.success('Nacrt obrisan');
+      router.push(`/forum/${universitySlug}/${facultySlug}`);
+    } catch (err) {
+      console.error('Error discarding draft:', err);
+      setSaveStatus('error');
+      toast.error('Greška pri brisanju nacrta');
+    }
+  }, [draftId, universitySlug, facultySlug, router]);
 
   // Auto-save draft
   const saveDraft = useCallback(async () => {
@@ -102,30 +178,33 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
     }
   }, [title, content, categoryId, selectedTags, draftId]);
 
-  // Auto-save on changes
+  // Auto-save on changes (only if enabled)
   useEffect(() => {
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
 
-    if (title || content) {
-      setSaveStatus('idle');
-      autoSaveTimeoutRef.current = setTimeout(() => {
-        saveDraft();
-      }, AUTOSAVE_DELAY);
+    if (!autoSaveEnabled || !title || !content) {
+      return;
     }
+
+    setSaveStatus('idle');
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      saveDraft();
+    }, AUTOSAVE_DELAY);
 
     return () => {
       if (autoSaveTimeoutRef.current) {
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
-  }, [title, content, categoryId, selectedTags, saveDraft]);
+  }, [title, content, categoryId, selectedTags, saveDraft, autoSaveEnabled]);
 
   // Warn before leaving with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if ((title || content) && saveStatus !== 'saved') {
+      // Warn if there's content but it's not saved on server (auto-save enabled) or not backed up locally
+      if ((title || content) && (autoSaveEnabled && saveStatus !== 'saved') || (!autoSaveEnabled && !hasLocalBackup)) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -133,7 +212,7 @@ export function CreateTopicPage({ categories, tags, initialDraft, universitySlug
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [title, content, saveStatus]);
+  }, [title, content, saveStatus, autoSaveEnabled, hasLocalBackup]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -729,8 +808,25 @@ Tko bi imao koristi od ovog resursa...`,
               )}
             </Button>
 
-            <div className="flex items-center gap-3">
-              <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
+            <div className="flex items-center gap-2 flex-wrap">
+              <AutoSaveIndicator 
+                status={saveStatus} 
+                lastSaved={lastSaved}
+                hasLocalBackup={hasLocalBackup}
+                autoSaveEnabled={autoSaveEnabled}
+                onToggleAutoSave={setAutoSaveEnabled}
+              />
+              {(title || content) && (
+                <button
+                  type="button"
+                  onClick={discardDraft}
+                  disabled={isSubmitting}
+                  className="px-3 py-1.5 rounded-full border text-sm font-medium bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-800/50 transition-all"
+                  title="Obriši nacrt"
+                >
+                  🗑️ Obriši
+                </button>
+              )}
             </div>
           </div>
 

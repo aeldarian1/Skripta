@@ -8,9 +8,12 @@ export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 interface AutoSaveIndicatorProps {
   status: SaveStatus;
   lastSaved?: Date | null;
+  hasLocalBackup?: boolean;
+  autoSaveEnabled?: boolean;
+  onToggleAutoSave?: (enabled: boolean) => void;
 }
 
-export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps) {
+export function AutoSaveIndicator({ status, lastSaved, hasLocalBackup, autoSaveEnabled = true, onToggleAutoSave }: AutoSaveIndicatorProps) {
   const [relativeTime, setRelativeTime] = useState('');
 
   useEffect(() => {
@@ -38,6 +41,16 @@ export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps)
   }, [lastSaved]);
 
   const getStatusDisplay = () => {
+    // Show auto-save disabled status
+    if (!autoSaveEnabled) {
+      return {
+        icon: <Cloud className="w-4 h-4" />,
+        text: hasLocalBackup ? 'Auto-save: OFF (lokalni backup)' : 'Auto-save: OFF',
+        color: 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+        borderColor: 'border-yellow-200 dark:border-yellow-700',
+      };
+    }
+
     switch (status) {
       case 'saving':
         return {
@@ -56,7 +69,7 @@ export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps)
       case 'error':
         return {
           icon: <AlertCircle className="w-4 h-4" />,
-          text: 'Greška pri spremanju',
+          text: hasLocalBackup ? 'Greška (ali imam backup)' : 'Greška pri spremanju',
           color: 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300',
           borderColor: 'border-red-200 dark:border-red-700',
         };
@@ -73,9 +86,25 @@ export function AutoSaveIndicator({ status, lastSaved }: AutoSaveIndicatorProps)
   const display = getStatusDisplay();
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${display.color} ${display.borderColor} transition-all`}>
-      {display.icon}
-      <span>{display.text}</span>
+    <div className="flex items-center gap-2">
+      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${display.color} ${display.borderColor} transition-all`}>
+        {display.icon}
+        <span>{display.text}</span>
+      </div>
+      
+      {/* Auto-save toggle button */}
+      <button
+        type="button"
+        onClick={() => onToggleAutoSave?.(!autoSaveEnabled)}
+        className={`px-3 py-1.5 rounded-full border text-sm transition-all font-medium ${
+          autoSaveEnabled
+            ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-800/50'
+            : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+        }`}
+        title={autoSaveEnabled ? 'Isključi auto-save' : 'Uključi auto-save'}
+      >
+        {autoSaveEnabled ? '✓ Auto' : '✗ Isključ'}
+      </button>
     </div>
   );
 }
