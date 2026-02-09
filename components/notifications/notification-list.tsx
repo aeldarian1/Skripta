@@ -88,10 +88,10 @@ export function NotificationList({
   };
 
   return (
-    <Card className="w-full md:w-[420px] max-w-full md:max-w-md h-[100vh] md:h-auto max-h-[100vh] md:max-h-[600px] overflow-hidden border-gray-200 dark:border-gray-700 md:animate-slide-down rounded-2xl md:rounded-xl">
-      <div className="p-4 md:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-750 dark:to-gray-800">
+    <Card className="w-full md:w-105 max-w-full md:max-w-md h-screen md:h-auto max-h-screen md:max-h-150 overflow-hidden border-gray-200 dark:border-gray-700 md:animate-slide-down rounded-2xl md:rounded-xl">
+      <div className="p-4 md:p-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-linear-to-r from-white via-gray-50 to-white dark:from-gray-800 dark:via-gray-750 dark:to-gray-800">
         <div className="flex items-center gap-2.5">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40">
+          <div className="p-2.5 rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40">
             <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h3 className="font-bold text-lg md:text-xl text-gray-900 dark:text-white">Obavijesti</h3>
@@ -121,12 +121,12 @@ export function NotificationList({
         </div>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100vh-140px)] md:h-auto md:max-h-[500px] scrollbar-hide">
+      <div className="overflow-y-auto h-[calc(100vh-140px)] md:h-auto md:max-h-125 scrollbar-hide">
         {notifications.length === 0 ? (
           <div className="p-12 md:p-16 text-center text-gray-500">
             <div className="relative inline-block mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-800 dark:to-indigo-800 rounded-full blur-2xl opacity-20"></div>
-              <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full p-6 border border-blue-100 dark:border-blue-800/50">
+              <div className="absolute inset-0 bg-linear-to-r from-blue-200 to-indigo-200 dark:from-blue-800 dark:to-indigo-800 rounded-full blur-2xl opacity-20"></div>
+              <div className="relative bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full p-6 border border-blue-100 dark:border-blue-800/50">
                 <Bell className="w-12 h-12 text-blue-400 dark:text-blue-500" />
               </div>
             </div>
@@ -140,28 +140,28 @@ export function NotificationList({
                 key={notification.id}
                 className={`group relative mx-3 my-2 p-4 cursor-pointer transition-all duration-250 rounded-xl border ${
                   !notification.is_read
-                    ? 'bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-purple-500/5 border-blue-200 dark:border-blue-800/30 dark:from-blue-500/10 dark:via-indigo-500/10 dark:to-purple-500/10 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700/50'
+                    ? 'bg-linear-to-br from-blue-500/5 via-indigo-500/5 to-purple-500/5 border-blue-200 dark:border-blue-800/30 dark:from-blue-500/10 dark:via-indigo-500/10 dark:to-purple-500/10 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700/50'
                     : 'bg-white dark:bg-gray-800/40 border-gray-200 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600/50 hover:shadow-sm'
                 } hover:scale-[1.01] active:scale-95`}
                 onClick={() => handleNotificationClick(notification)}
               >
                 {!notification.is_read && (
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500 rounded-l-[10px]"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-linear-to-b from-blue-500 via-indigo-500 to-purple-500 rounded-l-[10px]"></div>
                 )}
 
                 <div className="flex items-start gap-3 md:gap-4">
-                  <div className={`flex-shrink-0 mt-0.5 p-2.5 rounded-xl shadow-sm group-hover:shadow-lg transition-all duration-200 ${
-                    notification.type === 'upvote' 
-                      ? 'bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40'
+                  <div className={`shrink-0 mt-0.5 p-2.5 rounded-xl shadow-sm group-hover:shadow-lg transition-all duration-200 ${
+                    notification.type === 'upvote'
+                      ? 'bg-linear-to-br from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40'
                       : notification.type === 'topic_pinned'
-                      ? 'bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/40'
+                      ? 'bg-linear-to-br from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/40'
                       : notification.type === 'follow'
-                      ? 'bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40'
+                      ? 'bg-linear-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40'
                       : notification.type === 'new_message'
-                      ? 'bg-gradient-to-br from-pink-100 to-rose-100 dark:from-pink-900/40 dark:to-rose-900/40'
+                      ? 'bg-linear-to-br from-pink-100 to-rose-100 dark:from-pink-900/40 dark:to-rose-900/40'
                       : notification.type === 'report'
-                      ? 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/40'
-                      : 'bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40'
+                      ? 'bg-linear-to-br from-red-100 to-orange-100 dark:from-red-900/40 dark:to-orange-900/40'
+                      : 'bg-linear-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40'
                   }`}>
                     {getIcon(notification.type)}
                   </div>
@@ -174,7 +174,7 @@ export function NotificationList({
                             {notification.title}
                           </p>
                           {!notification.is_read && (
-                            <span className="inline-block w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex-shrink-0"></span>
+                            <span className="inline-block w-2 h-2 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full shrink-0"></span>
                           )}
                         </div>
                         <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2.5">
@@ -185,7 +185,7 @@ export function NotificationList({
                             {formatTimeAgo(notification.created_at)}
                           </span>
                           {!notification.is_read && (
-                            <span className="text-xs bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2 py-0.5 rounded-full font-semibold">
+                            <span className="text-xs bg-linear-to-r from-blue-500 to-indigo-500 text-white px-2 py-0.5 rounded-full font-semibold">
                               Novo
                             </span>
                           )}
@@ -195,7 +195,7 @@ export function NotificationList({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="flex-shrink-0 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all rounded-lg ml-2"
+                        className="shrink-0 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/40 transition-all rounded-lg ml-2"
                         onClick={(e) => handleDelete(e, notification.id)}
                         aria-label="Obriši obavijest"
                       >
@@ -211,7 +211,7 @@ export function NotificationList({
       </div>
 
       {notifications.length > 0 && (
-        <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white to-gray-50/50 dark:from-gray-800/50 dark:to-gray-800/30">
+        <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-linear-to-r from-white to-gray-50/50 dark:from-gray-800/50 dark:to-gray-800/30">
           <Link href="/notifications" onClick={onClose}>
             <Button
               variant="ghost"

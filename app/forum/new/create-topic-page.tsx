@@ -489,7 +489,7 @@ Tko bi imao koristi od ovog resursa...`,
       {/* Error Message */}
       {error && (
         <div className="mb-6 flex items-start gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
         </div>
       )}
@@ -675,7 +675,7 @@ Tko bi imao koristi od ovog resursa...`,
             </div>
 
             {isPreviewMode ? (
-              <div className="min-h-[300px] max-h-[500px] overflow-y-auto p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <div className="min-h-75 max-h-125 overflow-y-auto p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800">
                 {content ? (
                   <MarkdownRenderer content={content} />
                 ) : (

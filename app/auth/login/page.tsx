@@ -70,7 +70,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-3 sm:p-4">
       <Card className="w-full max-w-md shadow-xl animate-slide-up border-gray-200 dark:border-gray-700">
         <CardHeader className="space-y-3 px-4 sm:px-6 pt-6 sm:pt-8">
           <div className="flex justify-center">
@@ -89,7 +89,7 @@ export default function LoginPage() {
             {showSuccessMessage && (
               <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 animate-slide-up">
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-green-700 dark:text-green-300">
                       Lozinka uspješno promijenjena!
@@ -113,7 +113,7 @@ export default function LoginPage() {
             {state?.error && (
               <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 animate-slide-up">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                   <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
                 </div>
               </div>
