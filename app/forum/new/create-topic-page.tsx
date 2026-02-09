@@ -656,7 +656,6 @@ Tko bi imao koristi od ovog resursa...`,
                 onChange={setContent}
                 placeholder="Opiši detaljno svoje pitanje ili temu..."
                 maxLength={MAX_CONTENT_LENGTH}
-                onSave={saveDraft}
               />
             )}
           </CardContent>
